@@ -1,0 +1,267 @@
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    color: white;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .form-group input[type="email"],
+  .form-group input[type="password"] {
+    width: calc(100% - 20px);
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .form-group input[type="checkbox"] {
+    margin-right: 5px;
+  }
+  
+  .error {
+    color: blue;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  
+  .error-input {
+    border-color:blue;
+  }
+
+  .texterror{
+    color: red;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .form-actions button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .form-actions button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+  }
+  
+  .form-actions button[type="button"] {
+    background-color: #dc3545;
+    color: white;
+  }
+  
+  .forgot-password {
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .forgot-password a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .forgot-password a:hover {
+    text-decoration: underline;
+  }
+  
+  .login-message {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  
+  .profile-container {
+  max-width: 600px;
+  margin: auto;
+}
+
+.card {
+  margin-top: 20px;
+}
+
+.card-title {
+  font-size: 2rem;
+}
+
+.card-text {
+  font-size: 1.2rem;
+}
+
+.container {
+  max-width: 800px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+footer {
+  margin-top: 50px;
+  text-align: center;
+}
+
+footer p {
+  margin: 0;
+}
+
+.custom-navbar {
+    background-color: #343a40; 
+    color: #ffffff; 
+}
+
+.custom-navbar .navbar-brand img {
+    filter: brightness(0) invert(1);
+}
+
+.custom-navbar .nav-link {
+    color: #ffffff; 
+}
+
+.custom-navbar .nav-link:hover {
+    color: #adb5bd; 
+}
+
+.custom-navbar .btn-outline-primary {
+    border-color: #ffffff;
+    color: #ffffff; 
+}
+.form-check-label{
+  color: white;
+}
+
+.custom-navbar .btn-outline-primary:hover {
+    background-color: #ffffff; 
+    color: #343a40; 
+}
+
+.custom-navbar .dropdown-toggle {
+    color: #ffffff; 
+}
+
+.custom-navbar .dropdown-menu {
+    background-color: #343a40; 
+    border-color: #343a40;
+}
+
+.custom-navbar .dropdown-item {
+    color: #ffffff; 
+}
+
+.custom-navbar .dropdown-item:hover {
+    background-color: #495057; 
+}
+
+.register{
+  background-image: url('./image/registerbg.jpeg');
+  background-size: cover;
+  padding: 20px;
+ 
+}
+/* .register-loaded{
+  background-image: url('./image/registerbg.jpeg');
+} */
+.textregis{
+  color: white;
+  text-align: center;
+}
+
+.login{
+  background-image: url('./image/registerbg.jpeg');
+  background-size: cover;
+  padding: 50px;
+
+}
+ .login-message{
+  color: white
+  
+ }
+
+ /* Custom Navbar styles */
+.custom-navbar {
+    background-color: #343a40; /* Change to your preferred color */
+}
+
+.custom-navbar .navbar-brand img {
+    width: 90px;
+    height: 60px;
+}
+
+.custom-navbar .navbar-nav .nav-link {
+    color: #f8f9fa; /* Change to your preferred color */
+}
+
+.custom-navbar .navbar-nav .nav-link:hover {
+    color: #adb5bd; /* Change to your preferred hover color */
+}
+
+.custom-navbar .form-control {
+    border-color: #495057; /* Change to your preferred border color */
+}
+
+.custom-navbar .btn-outline-light {
+    color: #f8f9fa;
+    border-color: #f8f9fa;
+}
+
+.custom-navbar .btn-outline-light:hover {
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+.pro{
+  text-align: center;
+  background-color: lightgray;
+  padding: 135px;
+}
+
+.ho{
+  background-color: lightgoldenrodyellow;
+  padding: 20px;
+}
+.product{
+  background-color: lightgrey;
+  padding: 20px;
+}
+
+.about{
+  background-color:lightcyan;
+  padding: 20px;
+}
+.contact{
+  background-color:aquamarine;
+  padding: 30px;
+}
+
+.services{
+  background-color: lightblue;
+  padding: 20px;
+}
