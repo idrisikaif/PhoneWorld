@@ -24,7 +24,7 @@ const JWT_SECRET = 'your_jwt_secret_key';
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'kaifkaif1',
+    password: 'kaifkaif',
     database: 'registered'
 });
 

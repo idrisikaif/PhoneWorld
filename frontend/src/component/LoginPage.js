@@ -86,7 +86,7 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit} autoComplete='off'>
         <div className="form-group">
           <label></label>
-          <i class="fa-solid fa-user"></i>
+          <i className="fa-solid fa-user"></i>
           <input
             type="email"
             name="email"
@@ -99,7 +99,7 @@ const LoginPage = () => {
         </div>
         <div className="form-group">
           <label></label>
-          <i class="fa-solid fa-lock"></i>
+          <i className="fa-solid fa-lock"></i>
           <input
             type="password"
             name="password"

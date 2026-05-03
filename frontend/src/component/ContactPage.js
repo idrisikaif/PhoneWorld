@@ -12,22 +12,22 @@ const ContactPage = () => {
         <h1 className="mb-4">Contact Us Through</h1>
             <Row>
               <Col md={6}>
-                <h2><i class="fa-solid fa-envelope"></i>Email:</h2>
+                <h2><i className="fa-solid fa-envelope"></i>Email:</h2>
                 <p>
                   <Link to ="mailto:idrisikaif8898@gmail.com">idrisikaif8898@gmail.com</Link>
                 </p>
-                <h2><i class="fa-solid fa-phone"></i>Phone:</h2>
+                <h2><i className="fa-solid fa-phone"></i>Phone:</h2>
                 <p>
                   <Link to ="tel:+9226012635">(+91) 9226012635</Link>
                 </p>
-                <h2><i class="fa-solid fa-location-dot"></i>Location:</h2>
+                <h2><i className="fa-solid fa-location-dot"></i>Location:</h2>
                 <p>
                   <Link to={locationUrl} target="_blank" rel="noopener noreferrer">
                     gaibi nagar near norani masjid bhiwandi 
                   </Link>
                 </p>
                 
-                <h2><i class="fa-brands fa-instagram"></i>Instagram:</h2>
+                <h2><i className="fa-brands fa-instagram"></i>Instagram:</h2>
                 
                 <p>
                   <Link to="https://www.instagram.com/i_kaif86" target="_blank" rel="noopener noreferrer">
