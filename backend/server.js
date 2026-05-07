@@ -6,11 +6,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     methods: ['GET', 'POST'],
     credentials: true
 }));
@@ -18,14 +18,15 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 // JWT Secret
-const JWT_SECRET = 'your_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // MySQL Connection
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'kaifkaif',
-    database: 'registered'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
 });
 
 db.connect((err) => {
@@ -54,12 +55,10 @@ app.post('/register', async (req, res) => {
     try {
         const { fullName, mobileNumber, email, dob, gender, password } = req.body;
 
-        // Validation
         if (!fullName || !mobileNumber || !email || !dob || !gender || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Check if email already exists
         db.query('SELECT * FROM regis WHERE email = ?', [email], async (err, results) => {
             if (err) {
                 console.error('Database query error:', err);
@@ -70,10 +69,8 @@ app.post('/register', async (req, res) => {
                 return res.status(400).json({ message: 'Email already registered' });
             }
 
-            // Hash the password
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // Insert new user into the database
             const newUser = { fullName, mobileNumber, email, dob, gender, password: hashedPassword };
             db.query('INSERT INTO regis SET ?', newUser, (err) => {
                 if (err) {
@@ -97,13 +94,11 @@ app.post('/login', (req, res) => {
         return res.status(400).json({ message: 'Email and password are required' });
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
         return res.status(400).json({ message: 'Invalid email format' });
     }
 
-    // Query to find user by email
     db.query('SELECT * FROM regis WHERE email = ?', [email], async (err, results) => {
         if (err) {
             console.error('Database query error:', err);
@@ -111,23 +106,19 @@ app.post('/login', (req, res) => {
         }
 
         if (results.length === 0) {
-            console.log('No user found with the provided email:', email);
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const user = results[0];
 
-        // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Generate JWT Token
         const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
-        // Set JWT Token in cookie
-        res.cookie('token', token, { httpOnly: true, secure: false }); // secure: true for HTTPS
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
         res.status(200).json({
             message: 'Login successful',
             user: { id: user.id, email: user.email }
@@ -155,11 +146,10 @@ app.get('/profile', authenticateToken, (req, res) => {
 
 // Logout Route
 app.post('/logout', (req, res) => {
-    res.clearCookie('token'); // Clear the cookie
+    res.clearCookie('token');
     res.status(200).json({ message: 'Logged out successfully' });
 });
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
