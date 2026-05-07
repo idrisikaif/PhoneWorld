@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import './css.css';
 import Navbar from './Navy2';
 import axios from 'axios';
-
+import API_URL from './config'
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
@@ -48,7 +48,7 @@ const LoginPage = () => {
     event.preventDefault();
     if (validateLogin()) {
       try {
-        const response = await axios.post('http://localhost:5000/login', loginData, { withCredentials: true });
+       const response = await axios.post(`${API_URL}/login`, loginData, { withCredentials: true })
 
         if (response.status === 200) {
           const userData = response.data.user;

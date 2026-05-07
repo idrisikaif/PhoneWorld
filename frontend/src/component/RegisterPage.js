@@ -5,7 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './css.css';
 import Navbar from './Navy2';
 import axios from 'axios';
-
+import API_URL from './config'
 const RegisterPage = () => {
   const navigate = useNavigate();
 
@@ -138,7 +138,7 @@ const RegisterPage = () => {
             const formattedDate = formData.dob ? formData.dob.toISOString().split('T')[0] : null;
             const dataToSend = { ...formData, dob: formattedDate };
 
-            const response = await axios.post('http://localhost:5000/register', dataToSend);
+            const response = await axios.post(`${API_URL}/register`, dataToSend)
 
             setSubmissionMessage(response.data.message);
             navigate('/login');

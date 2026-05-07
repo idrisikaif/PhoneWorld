@@ -12,7 +12,7 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/profile', { withCredentials: true });
+       const response = await axios.get(`${API_URL}/profile`, { withCredentials: true })
         setUser(response.data);
       } catch (error) {
         setError('Failed to fetch profile data');
@@ -25,7 +25,7 @@ const ProfilePage = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
+      await axios.post(`${API_URL}/logout`, {}, { withCredentials: true })
       navigate('/login');
     } catch (error) {
       console.error('Failed to logout', error);
