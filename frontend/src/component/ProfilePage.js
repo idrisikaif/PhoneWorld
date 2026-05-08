@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './css.css';
 import axios from 'axios';
 import Navy from './Navy';
+import API_URL from './config';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
