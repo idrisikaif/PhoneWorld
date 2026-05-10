@@ -8,41 +8,36 @@ const HomePage = () => {
   return (
     <div>
       <Navy />
-      <div className="ho">
-        <Container className="mt-4">
-          <Row className="text-center">
-            <Col>
-              <h1>"Discover the Future with Kaif Phones"</h1>
-              <h5>
-                "Explore our wide range of smartphones and experience
-                unparalleled customer service"
+      <div className="ho py-5">
+        <Container>
+          <Row className="text-center mb-5">
+            <Col xs={12}>
+              <h1 className="display-5 fw-bold">"Discover the Future with Kaif Phones"</h1>
+              <h5 className="text-muted mt-3">
+                "Explore our wide range of smartphones and experience unparalleled customer service"
               </h5>
             </Col>
           </Row>
+
           <Row className="text-center mt-4">
-            <Col>
-              <h2>Featured Phones</h2>
-              <ul className="list-unstyled">
-                <li>
-                  <h5>Latest Models</h5>
-                </li>
-                <li>
-                  <h5>Advanced Features</h5>
-                </li>
-                <li>
-                  <h5>Exclusive Deals</h5>
-                </li>
+            <Col xs={12}>
+              <h2 className="mb-4">Featured Phones</h2>
+              <ul className="list-unstyled d-flex flex-wrap justify-content-center gap-3 gap-md-5 mb-5">
+                <li><h5>Latest Models</h5></li>
+                <li><h5>Advanced Features</h5></li>
+                <li><h5>Exclusive Deals</h5></li>
               </ul>
-              <h2>Explore Our Collection</h2>
+              
+              <h2 className="mb-4">Explore Our Collection</h2>
               <Row className="g-4">
-                <Col md={4} className="bg-yellow">
-                  <img src={home1} alt="homeimage" className="img-fluid" />
+                <Col xs={12} md={4}>
+                  <img src={home1} alt="homeimage" className="img-fluid rounded shadow-sm" />
                 </Col>
-                <Col md={4} className="bg-yellow">
-                  <img src={home2} alt="homeimage" className="img-fluid" />
+                <Col xs={12} md={4}>
+                  <img src={home2} alt="homeimage" className="img-fluid rounded shadow-sm" />
                 </Col>
-                <Col md={4} className="bg-yellow">
-                  <img src={home3} alt="homeimage" className="img-fluid" />
+                <Col xs={12} md={4}>
+                  <img src={home3} alt="homeimage" className="img-fluid rounded shadow-sm" />
                 </Col>
               </Row>
             </Col>

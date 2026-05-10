@@ -1,267 +1,220 @@
-.login-container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .login-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-    color: white;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .form-group input[type="email"],
-  .form-group input[type="password"] {
-    width: calc(100% - 20px);
-    padding: 8px 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .form-group input[type="checkbox"] {
-    margin-right: 5px;
-  }
-  
-  .error {
-    color: blue;
-    font-size: 12px;
-    margin-top: 5px;
-  }
-  
-  .error-input {
-    border-color:blue;
-  }
+body {
+    overflow-x: hidden;
+    background-color: #f4f7f6;
+}
 
-  .texterror{
-    color: red;
-  }
-  
-  .form-actions {
+/* --- LOGIN & REGISTER --- */
+.login, .register {
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./image/registerbg.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 20px;
-  }
-  
-  .form-actions button {
-    padding: 8px 16px;
-    border: none;
+    padding: 40px 0;
+}
+
+.login-container {
+    max-width: 500px;
+    width: 90%;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+}
+
+.textregis {
+    color: white;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-label, .form-check-label {
+    color: white;
+}
+
+.form-control, .form-select {
+    height: 45px;
     border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .form-actions button[type="submit"] {
-    background-color: #28a745;
-    color: white;
-  }
-  
-  .form-actions button[type="button"] {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  .forgot-password {
-    text-align: center;
-    margin-top: 15px;
-  }
-  
-  .forgot-password a {
-    color: #007bff;
-    text-decoration: none;
-  }
-  
-  .forgot-password a:hover {
-    text-decoration: underline;
-  }
-  
-  .login-message {
-    text-align: center;
+}
+
+.texterror, .error {
+    color: #ff4d4d;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
     margin-top: 20px;
+}
+
+.form-actions button {
+    flex: 1;
+    padding: 10px;
     font-weight: bold;
-  }
-  
-  .profile-container {
-  max-width: 600px;
-  margin: auto;
+}
+
+/* --- NAVBAR FIXES --- */
+.custom-navbar {
+    background-color: #343a40 !important;
+}
+
+.navbar-logo {
+    width: auto;
+    height: 50px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+    transform: scale(1.1);
+}
+
+/* Force Left-Right Alignment on Desktop */
+@media (min-width: 992px) {
+    .navbar-collapse {
+        display: flex !important;
+        justify-content: space-between;
+        width: 100%;
+    }
+    
+    .search-box {
+        margin-left: 50px;
+    }
+}
+
+/* --- CARDS & PRODUCTS --- */
+.product {
+    background-color: #ffffff;
+    padding: 60px 0;
+}
+
+.card-img-top {
+    height: 250px;
+    object-fit: cover;
+    border-bottom: 1px solid #eee;
 }
 
 .card {
-  margin-top: 20px;
+    transition: all 0.3s ease;
+    border: 1px solid #eee !important;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
 }
 
-.card-title {
-  font-size: 2rem;
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
 }
 
-.card-text {
-  font-size: 1.2rem;
+/* --- SECTIONS --- */
+.ho {
+    background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+    padding: 80px 0;
 }
 
-.container {
-  max-width: 800px;
-}
-
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+.ho h1 {
+    font-weight: 800;
+    color: #212529;
+    text-align: center;
 }
 
 h2 {
-  font-size: 2rem;
-  margin-top: 30px;
-  margin-bottom: 20px;
+    font-weight: 700;
+    color: #2d3436;
+    position: relative;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+    text-align: center;
 }
 
-footer {
-  margin-top: 50px;
-  text-align: center;
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 60px;
+    height: 4px;
+    background: #007bff;
+    border-radius: 2px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-footer p {
-  margin: 0;
+.pro {
+    background: #eef2f3;
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
 }
 
-.custom-navbar {
-    background-color: #343a40; 
-    color: #ffffff; 
+.about, .services {
+    background-color: #ffffff;
+    padding: 60px 0;
 }
 
-.custom-navbar .navbar-brand img {
-    filter: brightness(0) invert(1);
+.contact {
+    background-color: #fdfdfd;
+    padding: 60px 0;
 }
 
-.custom-navbar .nav-link {
-    color: #ffffff; 
+/* --- RESPONSIVENESS --- */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        padding: 15px 0;
+    }
+    .nav-link {
+        padding: 10px 0;
+        border-bottom: 1px solid #444;
+    }
+    .w-100-mobile {
+        width: 100%;
+    }
 }
 
-.custom-navbar .nav-link:hover {
-    color: #adb5bd; 
+@media (max-width: 768px) {
+    .login, .register {
+        background-attachment: scroll;
+        padding: 20px 0;
+    }
+    .login-container {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .pro, .ho, .about, .contact, .services {
+        padding: 40px 15px !important;
+    }
+    .card-img-top {
+        height: 200px;
+    }
+    .row.g-4 > [class*='col-'] {
+        margin-bottom: 24px;
+    }
 }
 
-.custom-navbar .btn-outline-primary {
-    border-color: #ffffff;
-    color: #ffffff; 
-}
-.form-check-label{
-  color: white;
-}
-
-.custom-navbar .btn-outline-primary:hover {
-    background-color: #ffffff; 
-    color: #343a40; 
-}
-
-.custom-navbar .dropdown-toggle {
-    color: #ffffff; 
-}
-
-.custom-navbar .dropdown-menu {
-    background-color: #343a40; 
-    border-color: #343a40;
-}
-
-.custom-navbar .dropdown-item {
-    color: #ffffff; 
-}
-
-.custom-navbar .dropdown-item:hover {
-    background-color: #495057; 
-}
-
-.register{
-  background-image: url('./image/registerbg.jpeg');
-  background-size: cover;
-  padding: 20px;
- 
-}
-/* .register-loaded{
-  background-image: url('./image/registerbg.jpeg');
-} */
-.textregis{
-  color: white;
-  text-align: center;
-}
-
-.login{
-  background-image: url('./image/registerbg.jpeg');
-  background-size: cover;
-  padding: 50px;
-
-}
- .login-message{
-  color: white
-  
- }
-
- /* Custom Navbar styles */
-.custom-navbar {
-    background-color: #343a40; /* Change to your preferred color */
-}
-
-.custom-navbar .navbar-brand img {
-    width: 90px;
-    height: 60px;
-}
-
-.custom-navbar .navbar-nav .nav-link {
-    color: #f8f9fa; /* Change to your preferred color */
-}
-
-.custom-navbar .navbar-nav .nav-link:hover {
-    color: #adb5bd; /* Change to your preferred hover color */
-}
-
-.custom-navbar .form-control {
-    border-color: #495057; /* Change to your preferred border color */
-}
-
-.custom-navbar .btn-outline-light {
-    color: #f8f9fa;
-    border-color: #f8f9fa;
-}
-
-.custom-navbar .btn-outline-light:hover {
-    background-color: #f8f9fa;
-    color: #343a40;
-}
-.pro{
-  text-align: center;
-  background-color: lightgray;
-  padding: 135px;
-}
-
-.ho{
-  background-color: lightgoldenrodyellow;
-  padding: 20px;
-}
-.product{
-  background-color: lightgrey;
-  padding: 20px;
-}
-
-.about{
-  background-color:lightcyan;
-  padding: 20px;
-}
-.contact{
-  background-color:aquamarine;
-  padding: 30px;
-}
-
-.services{
-  background-color: lightblue;
-  padding: 20px;
+@media (max-width: 576px) {
+    .display-5, .display-4 {
+        font-size: 1.8rem;
+    }
+    h2, h3 {
+        font-size: 1.4rem;
+    }
+    .login-container {
+        padding: 20px;
+        width: 95%;
+    }
+    .navbar-logo {
+        height: 40px;
+    }
 }

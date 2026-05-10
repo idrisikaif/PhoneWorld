@@ -8,8 +8,8 @@ import AboutPage from './component/AboutPage';
 import ProductPage from './component/ProductPage';
 import ServicesPage from './component/ServicesPage';
 import ProfilePage from './component/ProfilePage';
-import CartPage from './component/CartPage'; // Import the CartPage
-import { CartProvider } from './component/CartContext'; // Import CartProvider
+import CartPage from './component/CartPage'; 
+import { CartProvider } from './component/CartContext'; 
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
           <Route exact path="/service" element={<ServicesPage />} />
           <Route exact path="/about" element={<AboutPage />} />
           <Route exact path="/product" element={<ProductPage />} />
-          <Route exact path="/cart" element={<CartPage />} /> {/* Cart Page Route */}
+          <Route exact path="/cart" element={<CartPage />} /> 
         </Routes>
       
     </CartProvider>

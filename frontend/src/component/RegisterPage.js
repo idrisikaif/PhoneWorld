@@ -190,75 +190,81 @@ const RegisterPage = () => {
     setSubmissionMessage('');
   };
 
-  return (
+ return (
     <>
       <Navbar />
-      <div className="register" >
-        <div className="p-4  bg-grey" style={{ maxWidth: '600px', margin: '30px auto' }}>
-          <h2 className="textregis">Registration Page</h2>
-          <form onSubmit={handleSubmit} autoComplete='off'>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <input type="text" className="form-control" name="fullName" placeholder='Enter Your Full Name' value={formData.fullName} onChange={handleChange} />
-              {touched.fullName && errors.fullName && <span className="texterror">{errors.fullName}</span>}
+      <div className="register py-5">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-12 col-md-8 col-lg-6">
+              <div className="p-4 bg-grey rounded shadow-sm login-container"> {/* CSS class reuse ki hai */}
+                <h2 className="textregis mb-4">Registration Page</h2>
+                <form onSubmit={handleSubmit} autoComplete='off'>
+                  <div className="mb-3">
+                    <input type="text" className="form-control" name="fullName" placeholder='Enter Your Full Name' value={formData.fullName} onChange={handleChange} />
+                    {touched.fullName && errors.fullName && <span className="texterror">{errors.fullName}</span>}
+                  </div>
+                  
+                  <div className="mb-3">
+                    <input type="text" className="form-control" name="mobileNumber" placeholder='Enter Your Mobile Number' value={formData.mobileNumber} onChange={handleChange} />
+                    {touched.mobileNumber && errors.mobileNumber && <span className="texterror">{errors.mobileNumber}</span>}
+                  </div>
+
+                  <div className="mb-3">
+                    <input type="email" required className="form-control" name="email" placeholder='Enter Your Email' value={formData.email} onChange={handleChange} />
+                    {touched.email && errors.email && <span className="texterror">{errors.email}</span>}
+                  </div>
+
+                  <div className="mb-3">
+                    <DatePicker
+                      selected={formData.dob}
+                      onChange={handleDateChange}
+                      dateFormat="yyyy-MM-dd"
+                      maxDate={new Date()}
+                      showYearDropdown
+                      placeholderText="Select your date of birth"
+                      className="form-control w-100" 
+                    />
+                    {touched.dob && errors.dob && <span className="texterror">{errors.dob}</span>}
+                  </div>
+
+                  <div className="mb-3">
+                    <select className="form-select" name="gender" value={formData.gender} onChange={handleChange}>
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                    {touched.gender && errors.gender && <span className="texterror">{errors.gender}</span>}
+                  </div>
+
+                  <div className="mb-3">
+                    <input type="password" className="form-control" name="password" placeholder='Enter Your Password' value={formData.password} onChange={handleChange} />
+                    {touched.password && errors.password && <span className="texterror">{errors.password}</span>}
+                  </div>
+
+                  <div className="mb-3">
+                    <input type="password" className="form-control" name="confirmPassword" placeholder='Confirm Password' value={formData.confirmPassword} onChange={handleChange} />
+                    {touched.confirmPassword && errors.confirmPassword && <span className="texterror">{errors.confirmPassword}</span>}
+                  </div>
+
+                  <div className="form-check mb-3">
+                    <input type="checkbox" required className="form-check-input" id="terms" name="terms" checked={formData.terms} onChange={handleChange} />
+                    <label className="form-check-label text-white" htmlFor="terms">
+                      I agree to the terms and conditions
+                    </label>
+                    {touched.terms && errors.terms && <br /> && <span className="texterror">{errors.terms}</span>}
+                  </div>
+
+                  <div className="form-actions d-flex gap-2">
+                    <button type="submit" className="btn btn-primary flex-grow-1">Submit</button>
+                    <button type="button" className="btn btn-secondary flex-grow-1" onClick={handleCancel}>Cancel</button>
+                  </div>
+                  {submissionMessage && <div className="alert alert-info mt-3">{submissionMessage}</div>}
+                </form>
+              </div>
             </div>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <input type="text" className="form-control" name="mobileNumber" placeholder='Enter Your Mobile Number'  value={formData.mobileNumber} onChange={handleChange} />
-              {touched.mobileNumber && errors.mobileNumber && <span className="texterror">{errors.mobileNumber}</span>}
-            </div>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <input type="email"  required className="form-control" name="email" placeholder='Enter Your Email' value={formData.email} onChange={handleChange} />
-              {touched.email && errors.email && <span className="texterror">{errors.email}</span>}
-            </div>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <DatePicker
-                selected={formData.dob}
-                onChange={handleDateChange}
-                dateFormat="yyyy-MM-dd"
-                maxDate={new Date()}
-                showYearDropdown
-                yearDropdownItemNumber={100}
-                scrollableYearDropdown
-                placeholderText="Select your date of birth"
-                className="form-control"/>
-              {touched.dob && errors.dob && <span className="texterror">{errors.dob}</span>}
-            </div>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <select className="form-select" name="gender" placeholder='Gender' value={formData.gender} onChange={handleChange}>
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-              {touched.gender && errors.gender && <span className="texterror">{errors.gender}</span>}
-            </div>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <input type="password" className="form-control" name="password" placeholder='Enter Your Password' value={formData.password} onChange={handleChange} />
-              {touched.password && errors.password && <span className="texterror">{errors.password}</span>}
-            </div>
-            <div className="mb-3">
-              <label className="form-label"></label>
-              <input type="password" className="form-control" name="confirmPassword" placeholder='ConfirmPassword' value={formData.confirmPassword} onChange={handleChange} />
-              {touched.confirmPassword && errors.confirmPassword && <span className="texterror">{errors.confirmPassword}</span>}
-            </div>
-            <div className="form-check mb-3">
-              <input type="checkbox" required className="form-check-input" name="terms" checked={formData.terms} onChange={handleChange} />
-              <label className="form-check-label">
-                I agree to the terms and conditions
-              </label>
-              {touched.terms && errors.terms && <span className="texterror">{errors.terms}</span>}
-            </div>
-            <div className="d-flex justify-content-between">
-              <button type="submit" className="btn btn-primary">Submit</button>
-              <button type="button" className="btn btn-secondary" onClick={handleCancel}>Cancel</button>
-            </div>
-            {submissionMessage && <div className="alert alert-info mt-3">{submissionMessage}</div>}
-          </form>
+          </div>
         </div>
       </div>
     </>

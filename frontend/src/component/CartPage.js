@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { CartContext } from './CartContext';
+import Navy from './Navy'; 
 
 const CartPage = () => {
   const { cart, removeFromCart } = useContext(CartContext);
@@ -11,36 +12,66 @@ const CartPage = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <h2 className="mb-4">My Cart</h2>
-      {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
-      ) : (
-        <div>
-          <ul className="list-group mb-4">
-            {cart.map((item, index) => (
-              <li key={index} className="list-group-item">
-                <div className="row">
-                  <div className="col-md-3">
-                    <img src={item.imageUrl} alt={item.title} className="img-fluid" />
-                  </div>
-                  <div className="col-md-9">
-                    <h5>{item.title}</h5>
-                    <p>{item.description}</p>
-                    <p>Quantity: {item.quantity}</p>
-                    <p>Price: ₹{item.price}</p>
-                    <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(item)}>
-                      Remove
-                    </button>
-                  </div>
+    <>
+      <Navy />
+      <div className="container mt-5 pb-5">
+        <h2 className="mb-4">My Shopping Cart</h2>
+        {cart.length === 0 ? (
+          <div className="text-center py-5">
+            <p className="h4 text-muted">Your cart is empty.</p>
+          </div>
+        ) : (
+          <div className="row">
+            <div className="col-lg-8">
+              <ul className="list-group mb-4">
+                {cart.map((item, index) => (
+                  <li key={index} className="list-group-item p-3 mb-3 shadow-sm border rounded">
+                    <div className="row align-items-center">
+                      <div className="col-4 col-md-3">
+                        <img src={item.imageUrl} alt={item.title} className="img-fluid rounded" />
+                      </div>
+                      <div className="col-8 col-md-9">
+                        <div className="d-flex justify-content-between align-items-start">
+                          <h5 className="mb-1">{item.title}</h5>
+                          <button 
+                            className="btn btn-outline-danger btn-sm border-0" 
+                            onClick={() => removeFromCart(item)}
+                          >
+                            <i className="fa-solid fa-trash"></i> Remove
+                          </button>
+                        </div>
+                        <p className="text-muted small d-none d-md-block">{item.description}</p>
+                        <div className="d-flex justify-content-between align-items-center mt-2">
+                          <p className="mb-0"><strong>Qty:</strong> {item.quantity}</p>
+                          <p className="mb-0 fw-bold text-success">₹{item.price}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            
+            {/* Total Section - Side on Desktop, Bottom on Mobile */}
+            <div className="col-lg-4">
+              <div className="card p-4 shadow-sm bg-light">
+                <h4>Order Summary</h4>
+                <hr />
+                <div className="d-flex justify-content-between mb-3">
+                  <span>Subtotal:</span>
+                  <span>₹{calculateTotal()}</span>
                 </div>
-              </li>
-            ))}
-          </ul>
-          <h3 className="text-right">Total: ₹{calculateTotal()}</h3>
-        </div>
-      )}
-    </div>
+                <div className="d-flex justify-content-between mb-3 fw-bold h5">
+                  <span>Total:</span>
+                  <span className="text-primary">₹{calculateTotal()}</span>
+                </div>
+                <button className="btn btn-success btn-lg w-100 mt-2">Proceed to Checkout</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
