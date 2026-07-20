@@ -102,7 +102,7 @@ const LoginPage = () => {
                 )}
 
                 <form onSubmit={handleSubmit} autoComplete='off'>
-                  <div className="form-group mb-3 position-relative">
+                  <div className="form-group mb-3">
                     <input
                       type="email"
                       name="email"
@@ -114,22 +114,25 @@ const LoginPage = () => {
                     {errors.email && <span className="error">{errors.email}</span>}
                   </div>
                   
-                  <div className="form-group mb-3 position-relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      name="password"
-                      placeholder='Enter Your Password'
-                      value={loginData.password}
-                      onChange={handleChange}
-                      className={`form-control pe-5 ${errors.password ? 'error-input' : ''}`}
-                    />
-                    <button 
-                      type="button" 
-                      className="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-white text-decoration-none"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? '🙈' : '👁️'}
-                    </button>
+                  <div className="form-group mb-3">
+                    <div className="position-relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        placeholder='Enter Your Password'
+                        value={loginData.password}
+                        onChange={handleChange}
+                        className={`form-control pe-5 ${errors.password ? 'error-input' : ''}`}
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent text-white p-0"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ zIndex: 10, fontSize: '1.2rem', lineHeight: 1 }}
+                      >
+                        {showPassword ? '🙈' : '👁️'}
+                      </button>
+                    </div>
                     {errors.password && <span className="error">{errors.password}</span>}
                   </div>
 

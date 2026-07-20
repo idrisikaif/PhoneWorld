@@ -246,41 +246,47 @@ const RegisterPage = () => {
                     {touched.gender && errors.gender && <span className="texterror">{errors.gender}</span>}
                   </div>
 
-                  <div className="mb-3 position-relative">
-                    <input 
-                      type={showPassword ? 'text' : 'password'} 
-                      className="form-control pe-5" 
-                      name="password" 
-                      placeholder='Enter Your Password' 
-                      value={formData.password} 
-                      onChange={handleChange} 
-                    />
-                    <button 
-                      type="button" 
-                      className="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-white text-decoration-none"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? '🙈' : '👁️'}
-                    </button>
+                  <div className="mb-3">
+                    <div className="position-relative">
+                      <input 
+                        type={showPassword ? 'text' : 'password'} 
+                        className="form-control pe-5" 
+                        name="password" 
+                        placeholder='Enter Your Password' 
+                        value={formData.password} 
+                        onChange={handleChange} 
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent text-white p-0"
+                        onClick={() => setShowPassword(!showPassword)}
+                        style={{ zIndex: 10, fontSize: '1.2rem', lineHeight: 1 }}
+                      >
+                        {showPassword ? '🙈' : '👁️'}
+                      </button>
+                    </div>
                     {touched.password && errors.password && <span className="texterror">{errors.password}</span>}
                   </div>
 
-                  <div className="mb-3 position-relative">
-                    <input 
-                      type={showConfirmPassword ? 'text' : 'password'} 
-                      className="form-control pe-5" 
-                      name="confirmPassword" 
-                      placeholder='Confirm Password' 
-                      value={formData.confirmPassword} 
-                      onChange={handleChange} 
-                    />
-                    <button 
-                      type="button" 
-                      className="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-white text-decoration-none"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    >
-                      {showConfirmPassword ? '🙈' : '👁️'}
-                    </button>
+                  <div className="mb-3">
+                    <div className="position-relative">
+                      <input 
+                        type={showConfirmPassword ? 'text' : 'password'} 
+                        className="form-control pe-5" 
+                        name="confirmPassword" 
+                        placeholder='Confirm Password' 
+                        value={formData.confirmPassword} 
+                        onChange={handleChange} 
+                      />
+                      <button 
+                        type="button" 
+                        className="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent text-white p-0"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        style={{ zIndex: 10, fontSize: '1.2rem', lineHeight: 1 }}
+                      >
+                        {showConfirmPassword ? '🙈' : '👁️'}
+                      </button>
+                    </div>
                     {touched.confirmPassword && errors.confirmPassword && <span className="texterror">{errors.confirmPassword}</span>}
                   </div>
 
