@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const TokenBlacklist = require('../models/TokenBlacklist');
 
 const getCookieOptions = () => {
     const isProduction = process.env.NODE_ENV === 'production';
@@ -121,12 +122,31 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-// @desc    Logout user & clear cookie
+// @desc    Logout user & blacklist JWT token
 // @route   POST /logout
 // @access  Public
-const logoutUser = (req, res) => {
-    res.clearCookie('token', getCookieOptions());
-    return res.status(200).json({ message: 'Logged out successfully' });
+const logoutUser = async (req, res) => {
+    try {
+        const token = req.cookies && req.cookies.token;
+
+        if (token) {
+            const decoded = jwt.decode(token);
+            if (decoded && decoded.exp) {
+                const expiresAt = new Date(decoded.exp * 1000);
+                await TokenBlacklist.create({ token, expiresAt }).catch(err => {
+                    // Ignore duplicate key errors if token is already blacklisted
+                    if (err.code !== 11000) console.error('Blacklist create error:', err);
+                });
+            }
+        }
+
+        res.clearCookie('token', getCookieOptions());
+        return res.status(200).json({ message: 'Logged out successfully' });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.clearCookie('token', getCookieOptions());
+        return res.status(200).json({ message: 'Logged out successfully' });
+    }
 };
 
 module.exports = {
