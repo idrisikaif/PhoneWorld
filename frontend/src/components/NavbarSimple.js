@@ -1,11 +1,12 @@
-import React from 'react'
-import logo from './image/phone2.png'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import logo from '../assets/image/phone2.png';
 
-const Navbar2 = () => {
+const NavbarSimple = () => {
     return (
       <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
         <div className="container-fluid d-flex justify-content-between align-items-center">
-          <a className="navbar-brand d-flex align-items-center" href="#">
+          <Link className="navbar-brand d-flex align-items-center" to="/">
             <img 
                 src={logo} 
                 width="70" 
@@ -13,15 +14,11 @@ const Navbar2 = () => {
                 className="d-inline-block align-top img-fluid" 
                 alt="Logo" 
             />
-            
-          </a>
+          </Link>
           <h5 className="mb-0 d-inline-block d-sm-none fw-bold">Kaif Phones</h5>
-          
-          <div className="d-flex">
-          </div>
         </div>
       </nav>
     );
-  };
+};
   
-  export default Navbar2;
+export default NavbarSimple;

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Link } from 'react-router-dom';
-import './css.css';
-import Navbar from './Navy2';
+import { useNavigate, Link } from 'react-router-dom';
+import '../styles/css.css';
+import NavbarSimple from '../components/NavbarSimple';
 import axios from 'axios';
-import API_URL from './config'
+import API_URL from '../api/config';
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
@@ -48,7 +48,7 @@ const LoginPage = () => {
     event.preventDefault();
     if (validateLogin()) {
       try {
-       const response = await axios.post(`${API_URL}/login`, loginData, { withCredentials: true })
+        const response = await axios.post(`${API_URL}/login`, loginData, { withCredentials: true });
 
         if (response.status === 200) {
           const userData = response.data.user;
@@ -56,13 +56,13 @@ const LoginPage = () => {
           navigate('/profile');
         }
       } catch (error) {
-        setLoginMessage('Invalid email or password.');
+        setLoginMessage(error.response?.data?.message || 'Invalid email or password.');
       }
     } else {
       setLoginMessage('Login failed. Please check your email and password.');
     }
   };
-  
+
   const handleCancel = (event) => {
     event.preventDefault();
     setLoginData({
@@ -79,7 +79,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <Navbar />
+      <NavbarSimple />
       <div className='login py-5'>
         <div className="container">
           <div className="row justify-content-center">
@@ -129,7 +129,7 @@ const LoginPage = () => {
                   </div>
 
                   <div className="forgot-password text-center mt-3">
-                    <Link to="/" className="text-white">Forgot Password?</Link>
+                    <Link to="/register" className="text-white">Don't have an account? Register</Link>
                   </div>
                   {loginMessage && <div className="alert alert-danger mt-3 text-center">{loginMessage}</div>}
                 </form>

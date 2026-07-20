@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { CartContext } from './CartContext';
-import Navy from './Navy'; 
+import { CartContext } from '../context/CartContext';
+import Navbar from '../components/Navbar'; 
 
 const CartPage = () => {
   const { cart, removeFromCart } = useContext(CartContext);
@@ -13,7 +13,7 @@ const CartPage = () => {
 
   return (
     <>
-      <Navy />
+      <Navbar />
       <div className="container mt-5 pb-5">
         <h2 className="mb-4">My Shopping Cart</h2>
         {cart.length === 0 ? (
@@ -40,10 +40,10 @@ const CartPage = () => {
                             <i className="fa-solid fa-trash"></i> Remove
                           </button>
                         </div>
-                        <p className="text-muted small d-none d-md-block">{item.description}</p>
+                        <div className="text-muted small d-none d-md-block">{item.description}</div>
                         <div className="d-flex justify-content-between align-items-center mt-2">
                           <p className="mb-0"><strong>Qty:</strong> {item.quantity}</p>
-                          <p className="mb-0 fw-bold text-success">₹{item.price}</p>
+                          <p className="mb-0 fw-bold text-success">₹{item.price * item.quantity}</p>
                         </div>
                       </div>
                     </div>
@@ -52,7 +52,6 @@ const CartPage = () => {
               </ul>
             </div>
             
-            {/* Total Section - Side on Desktop, Bottom on Mobile */}
             <div className="col-lg-4">
               <div className="card p-4 shadow-sm bg-light">
                 <h4>Order Summary</h4>

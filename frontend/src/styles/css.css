@@ -6,7 +6,7 @@ body {
 /* --- LOGIN & REGISTER --- */
 .login, .register {
     min-height: 100vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('./image/registerbg.jpeg');
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../assets/image/registerbg.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

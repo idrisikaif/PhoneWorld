@@ -1,13 +1,14 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import Navy from "./Navy";
-import home1 from "./image/home1.jpg";
-import home2 from "./image/home2.jpg";
-import home3 from "./image/home3.jpg";
+import Navbar from "../components/Navbar";
+import home1 from "../assets/image/home1.jpg";
+import home2 from "../assets/image/home2.jpg";
+import home3 from "../assets/image/home3.jpg";
+
 const HomePage = () => {
   return (
     <div>
-      <Navy />
+      <Navbar />
       <div className="ho py-5">
         <Container>
           <Row className="text-center mb-5">

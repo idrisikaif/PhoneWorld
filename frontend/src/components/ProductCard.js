@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { CartContext } from './CartContext';
+import { CartContext } from '../context/CartContext';
 import { Link } from 'react-router-dom';
 
-const Card = ({ imageUrl, title, price, description }) => {
+const ProductCard = ({ imageUrl, title, price, description }) => {
   const { addToCart } = useContext(CartContext);
 
   return (
@@ -11,8 +11,8 @@ const Card = ({ imageUrl, title, price, description }) => {
       <img src={imageUrl} className="card-img-top" alt={title} />
       <div className="card-body d-flex flex-column">
         <h5 className="card-title">{title}</h5>
-        <p className="card-text flex-grow-1">{description}</p>
-        <h5 className="card-price text-primary mb-3">₹{price}</h5>
+        <div className="card-text flex-grow-1">{description}</div>
+        <h5 className="card-price text-primary my-3">₹{price}</h5>
         <div className="d-grid gap-2 d-md-block">
           <button 
             className="btn btn-primary me-md-2" 
@@ -29,11 +29,11 @@ const Card = ({ imageUrl, title, price, description }) => {
   );
 };
 
-Card.propTypes = {
+ProductCard.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   price: PropTypes.number.isRequired, 
 };
 
-export default Card;
+export default ProductCard;

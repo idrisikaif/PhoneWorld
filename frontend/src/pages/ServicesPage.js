@@ -1,11 +1,11 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
-import Navy from "./Navy";
+import Navbar from "../components/Navbar";
 
 const ServicesPage = () => {
   return (
     <div>
-      <Navy />
+      <Navbar />
       <div className="services py-5">
         <Container>
           <h1 className="text-center mb-5 fw-bold">Our Services</h1>

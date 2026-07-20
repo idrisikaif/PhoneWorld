@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import './css.css';
-import Navbar from './Navy2';
+import '../styles/css.css';
+import NavbarSimple from '../components/NavbarSimple';
 import axios from 'axios';
-import API_URL from './config'
+import API_URL from '../api/config';
+
 const RegisterPage = () => {
   const navigate = useNavigate();
 
@@ -20,17 +21,7 @@ const RegisterPage = () => {
     terms: false,
   });
 
-  const [errors, setErrors] = useState({
-    fullName: '',
-    mobileNumber: '',
-    email: '',
-    dob: '',
-    gender: '',
-    password: '',
-    confirmPassword: '',
-    terms: false,
-  });
-
+  const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({
     fullName: false,
     mobileNumber: false,
@@ -42,7 +33,6 @@ const RegisterPage = () => {
     terms: false,
   });
 
-  const [isFormValid, setIsFormValid] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
 
   const handleChange = (e) => {
@@ -82,79 +72,98 @@ const RegisterPage = () => {
     });
   };
 
-  useEffect(() => {
-    let errors = {};
+  const validateForm = (data, isTouched) => {
+    let errs = {};
     let isValid = true;
 
-    if (touched.fullName && (formData.fullName.trim() === '' || formData.fullName.length < 2)) {
-      errors.fullName = 'Name must be at least 2 characters long';
+    if (isTouched.fullName && (!data.fullName || data.fullName.trim() === '' || data.fullName.length < 2)) {
+      errs.fullName = 'Name must be at least 2 characters long';
       isValid = false;
     }
 
-    if (touched.mobileNumber && formData.mobileNumber.length < 10) {
-      errors.mobileNumber = 'Mobile Number must be a valid 10-digit number';
+    if (isTouched.mobileNumber && (!data.mobileNumber || data.mobileNumber.length < 10)) {
+      errs.mobileNumber = 'Mobile Number must be a valid 10-digit number';
       isValid = false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (touched.email && !emailRegex.test(formData.email)) {
-      errors.email = 'Please enter a valid email address';
+    if (isTouched.email && (!data.email || !emailRegex.test(data.email))) {
+      errs.email = 'Please enter a valid email address';
       isValid = false;
     }
 
-    if (touched.dob && !formData.dob) {
-      errors.dob = 'Date of Birth is required';
+    if (isTouched.dob && !data.dob) {
+      errs.dob = 'Date of Birth is required';
       isValid = false;
     }
 
-    if (touched.gender && !formData.gender) {
-      errors.gender = 'Gender is required';
+    if (isTouched.gender && !data.gender) {
+      errs.gender = 'Gender is required';
       isValid = false;
     }
 
-    if (touched.password && formData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters long';
+    if (isTouched.password && (!data.password || data.password.length < 6)) {
+      errs.password = 'Password must be at least 6 characters long';
       isValid = false;
     }
 
-    if (touched.confirmPassword && formData.confirmPassword !== formData.password) {
-      errors.confirmPassword = 'Passwords do not match';
+    if (isTouched.confirmPassword && (!data.confirmPassword || data.confirmPassword !== data.password)) {
+      errs.confirmPassword = 'Passwords do not match';
       isValid = false;
     }
 
-    if (touched.terms && !formData.terms) {
-      errors.terms = 'You must agree to the terms and conditions';
+    if (isTouched.terms && !data.terms) {
+      errs.terms = 'You must agree to the terms and conditions';
       isValid = false;
     }
 
-    setErrors(errors);
-    setIsFormValid(isValid);
+    setErrors(errs);
+    return isValid;
+  };
+
+  useEffect(() => {
+    validateForm(formData, touched);
   }, [formData, touched]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (isFormValid) {
-        try {
-            const formattedDate = formData.dob ? formData.dob.toISOString().split('T')[0] : null;
-            const dataToSend = { ...formData, dob: formattedDate };
+    
+    // Touch all fields on submit attempt
+    const allTouched = {
+      fullName: true,
+      mobileNumber: true,
+      email: true,
+      dob: true,
+      gender: true,
+      password: true,
+      confirmPassword: true,
+      terms: true,
+    };
+    setTouched(allTouched);
 
-            const response = await axios.post(`${API_URL}/register`, dataToSend)
+    const isValid = validateForm(formData, allTouched);
 
-            setSubmissionMessage(response.data.message);
-            navigate('/login');
-        } catch (error) {
-            if (error.response && error.response.data) {
-                setSubmissionMessage(error.response.data.message); // Display server error message
-            } else {
-                setSubmissionMessage('An error occurred. Please try again.');
-            }
+    if (isValid) {
+      try {
+        const formattedDate = formData.dob ? formData.dob.toISOString().split('T')[0] : null;
+        const dataToSend = { ...formData, dob: formattedDate };
+
+        const response = await axios.post(`${API_URL}/register`, dataToSend);
+
+        setSubmissionMessage(response.data.message);
+        navigate('/login');
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setSubmissionMessage(error.response.data.message);
+        } else {
+          setSubmissionMessage('An error occurred. Please try again.');
         }
+      }
     } else {
-        setSubmissionMessage('Form is incomplete.');
+      setSubmissionMessage('Please complete all required fields correctly.');
     }
-};
-  
-  
+  };
+
   const handleCancel = (event) => {
     event.preventDefault();
     setFormData({
@@ -167,16 +176,7 @@ const RegisterPage = () => {
       confirmPassword: '',
       terms: false,
     });
-    setErrors({
-      fullName: '',
-      mobileNumber: '',
-      email: '',
-      dob: '',
-      gender: '',
-      password: '',
-      confirmPassword: '',
-      terms: false,
-    });
+    setErrors({});
     setTouched({
       fullName: false,
       mobileNumber: false,
@@ -190,14 +190,14 @@ const RegisterPage = () => {
     setSubmissionMessage('');
   };
 
- return (
+  return (
     <>
-      <Navbar />
+      <NavbarSimple />
       <div className="register py-5">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-12 col-md-8 col-lg-6">
-              <div className="p-4 bg-grey rounded shadow-sm login-container"> {/* CSS class reuse ki hai */}
+              <div className="p-4 bg-grey rounded shadow-sm login-container">
                 <h2 className="textregis mb-4">Registration Page</h2>
                 <form onSubmit={handleSubmit} autoComplete='off'>
                   <div className="mb-3">
@@ -211,7 +211,7 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="mb-3">
-                    <input type="email" required className="form-control" name="email" placeholder='Enter Your Email' value={formData.email} onChange={handleChange} />
+                    <input type="email" className="form-control" name="email" placeholder='Enter Your Email' value={formData.email} onChange={handleChange} />
                     {touched.email && errors.email && <span className="texterror">{errors.email}</span>}
                   </div>
 
@@ -249,11 +249,16 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="form-check mb-3">
-                    <input type="checkbox" required className="form-check-input" id="terms" name="terms" checked={formData.terms} onChange={handleChange} />
+                    <input type="checkbox" className="form-check-input" id="terms" name="terms" checked={formData.terms} onChange={handleChange} />
                     <label className="form-check-label text-white" htmlFor="terms">
                       I agree to the terms and conditions
                     </label>
-                    {touched.terms && errors.terms && <br /> && <span className="texterror">{errors.terms}</span>}
+                    {touched.terms && errors.terms && (
+                      <>
+                        <br />
+                        <span className="texterror">{errors.terms}</span>
+                      </>
+                    )}
                   </div>
 
                   <div className="form-actions d-flex gap-2">

@@ -1,155 +1,35 @@
+require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const connectDB = require('./config/db');
+const authRoutes = require('./routes/authRoutes');
+
 const app = express();
 const port = process.env.PORT || 5000;
+
+// Connect to MongoDB
+connectDB();
 
 // Middleware
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true
 }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// JWT Secret
-const JWT_SECRET = process.env.JWT_SECRET;
+// API Routes
+app.use('/', authRoutes);
 
-// MySQL Connection
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    port: process.env.DB_PORT
+// Health Check Route
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Backend server is running smoothly' });
 });
 
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection error:', err);
-        process.exit(1);
-    }
-    console.log('Connected to MySQL');
-});
-
-// Authentication Middleware
-const authenticateToken = (req, res, next) => {
-    const token = req.cookies.token;
-
-    if (token == null) return res.sendStatus(401);
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
-};
-
-// Registration Route
-app.post('/register', async (req, res) => {
-    try {
-        const { fullName, mobileNumber, email, dob, gender, password } = req.body;
-
-        if (!fullName || !mobileNumber || !email || !dob || !gender || !password) {
-            return res.status(400).json({ message: 'All fields are required' });
-        }
-
-        db.query('SELECT * FROM regis WHERE email = ?', [email], async (err, results) => {
-            if (err) {
-                console.error('Database query error:', err);
-                return res.status(500).json({ message: 'An error occurred. Please try again.' });
-            }
-
-            if (results.length > 0) {
-                return res.status(400).json({ message: 'Email already registered' });
-            }
-
-            const hashedPassword = await bcrypt.hash(password, 10);
-
-            const newUser = { fullName, mobileNumber, email, dob, gender, password: hashedPassword };
-            db.query('INSERT INTO regis SET ?', newUser, (err) => {
-                if (err) {
-                    console.error('Database insert error:', err);
-                    return res.status(500).json({ message: 'An error occurred. Please try again.' });
-                }
-                res.status(201).json({ message: 'Registration successful' });
-            });
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'An error occurred. Please try again.' });
-    }
-});
-
-// Login Route
-app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ message: 'Invalid email format' });
-    }
-
-    db.query('SELECT * FROM regis WHERE email = ?', [email], async (err, results) => {
-        if (err) {
-            console.error('Database query error:', err);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-
-        if (results.length === 0) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        const user = results[0];
-
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Invalid email or password' });
-        }
-
-        const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
-
-        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'none' });
-        res.status(200).json({
-            message: 'Login successful',
-            user: { id: user.id, email: user.email }
-        });
-    });
-});
-
-// Profile Route
-app.get('/profile', authenticateToken, (req, res) => {
-    const { email } = req.user;
-    
-    db.query('SELECT * FROM regis WHERE email = ?', [email], (err, results) => {
-        if (err) {
-            console.error('Database query error:', err);
-            return res.status(500).json({ message: 'Internal server error' });
-        }
-    
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-    
-        res.status(200).json(results[0]);
-    });
-});
-
-// Logout Route
-app.post('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.status(200).json({ message: 'Logged out successfully' });
-});
-
+// Start Server
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
