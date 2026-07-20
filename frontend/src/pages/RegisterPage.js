@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/css.css';
@@ -33,6 +33,9 @@ const RegisterPage = () => {
     terms: false,
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [submissionMessage, setSubmissionMessage] = useState('');
 
   const handleChange = (e) => {
@@ -128,7 +131,6 @@ const RegisterPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     
-    // Touch all fields on submit attempt
     const allTouched = {
       fullName: true,
       mobileNumber: true,
@@ -144,6 +146,8 @@ const RegisterPage = () => {
     const isValid = validateForm(formData, allTouched);
 
     if (isValid) {
+      setIsLoading(true);
+      setSubmissionMessage('');
       try {
         const formattedDate = formData.dob ? formData.dob.toISOString().split('T')[0] : null;
         const dataToSend = { ...formData, dob: formattedDate };
@@ -151,13 +155,17 @@ const RegisterPage = () => {
         const response = await axios.post(`${API_URL}/register`, dataToSend);
 
         setSubmissionMessage(response.data.message);
-        navigate('/login');
+        setTimeout(() => {
+          navigate('/login', { state: { registered: true, message: 'Registration successful! Please log in.' } });
+        }, 1000);
       } catch (error) {
         if (error.response && error.response.data) {
           setSubmissionMessage(error.response.data.message);
         } else {
-          setSubmissionMessage('An error occurred. Please try again.');
+          setSubmissionMessage('An error occurred during registration. Please try again.');
         }
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setSubmissionMessage('Please complete all required fields correctly.');
@@ -206,7 +214,7 @@ const RegisterPage = () => {
                   </div>
                   
                   <div className="mb-3">
-                    <input type="text" className="form-control" name="mobileNumber" placeholder='Enter Your Mobile Number' value={formData.mobileNumber} onChange={handleChange} />
+                    <input type="text" className="form-control" name="mobileNumber" placeholder='Enter Your Mobile Number (10 digits)' value={formData.mobileNumber} onChange={handleChange} maxLength="10" />
                     {touched.mobileNumber && errors.mobileNumber && <span className="texterror">{errors.mobileNumber}</span>}
                   </div>
 
@@ -238,13 +246,41 @@ const RegisterPage = () => {
                     {touched.gender && errors.gender && <span className="texterror">{errors.gender}</span>}
                   </div>
 
-                  <div className="mb-3">
-                    <input type="password" className="form-control" name="password" placeholder='Enter Your Password' value={formData.password} onChange={handleChange} />
+                  <div className="mb-3 position-relative">
+                    <input 
+                      type={showPassword ? 'text' : 'password'} 
+                      className="form-control pe-5" 
+                      name="password" 
+                      placeholder='Enter Your Password' 
+                      value={formData.password} 
+                      onChange={handleChange} 
+                    />
+                    <button 
+                      type="button" 
+                      className="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-white text-decoration-none"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
                     {touched.password && errors.password && <span className="texterror">{errors.password}</span>}
                   </div>
 
-                  <div className="mb-3">
-                    <input type="password" className="form-control" name="confirmPassword" placeholder='Confirm Password' value={formData.confirmPassword} onChange={handleChange} />
+                  <div className="mb-3 position-relative">
+                    <input 
+                      type={showConfirmPassword ? 'text' : 'password'} 
+                      className="form-control pe-5" 
+                      name="confirmPassword" 
+                      placeholder='Confirm Password' 
+                      value={formData.confirmPassword} 
+                      onChange={handleChange} 
+                    />
+                    <button 
+                      type="button" 
+                      className="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-white text-decoration-none"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? '🙈' : '👁️'}
+                    </button>
                     {touched.confirmPassword && errors.confirmPassword && <span className="texterror">{errors.confirmPassword}</span>}
                   </div>
 
@@ -262,10 +298,21 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="form-actions d-flex gap-2">
-                    <button type="submit" className="btn btn-primary flex-grow-1">Submit</button>
-                    <button type="button" className="btn btn-secondary flex-grow-1" onClick={handleCancel}>Cancel</button>
+                    <button type="submit" className="btn btn-primary flex-grow-1" disabled={isLoading}>
+                      {isLoading ? 'Submitting...' : 'Submit'}
+                    </button>
+                    <button type="button" className="btn btn-secondary flex-grow-1" onClick={handleCancel} disabled={isLoading}>Cancel</button>
                   </div>
-                  {submissionMessage && <div className="alert alert-info mt-3">{submissionMessage}</div>}
+
+                  <div className="text-center mt-3">
+                    <Link to="/login" className="text-white text-decoration-underline">Already have an account? Login</Link>
+                  </div>
+
+                  {submissionMessage && (
+                    <div className={`alert ${submissionMessage.includes('successful') ? 'alert-success' : 'alert-info'} mt-3`}>
+                      {submissionMessage}
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import '../styles/css.css';
 import NavbarSimple from '../components/NavbarSimple';
 import axios from 'axios';
@@ -7,6 +7,8 @@ import API_URL from '../api/config';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
@@ -18,7 +20,9 @@ const LoginPage = () => {
     password: '',
   });
 
-  const [loginMessage, setLoginMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loginMessage, setLoginMessage] = useState(location.state?.message || '');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -47,6 +51,8 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateLogin()) {
+      setIsLoading(true);
+      setLoginMessage('');
       try {
         const response = await axios.post(`${API_URL}/login`, loginData, { withCredentials: true });
 
@@ -57,6 +63,8 @@ const LoginPage = () => {
         }
       } catch (error) {
         setLoginMessage(error.response?.data?.message || 'Invalid email or password.');
+      } finally {
+        setIsLoading(false);
       }
     } else {
       setLoginMessage('Login failed. Please check your email and password.');
@@ -86,6 +94,13 @@ const LoginPage = () => {
             <div className="col-12 col-sm-10 col-md-8 col-lg-5">
               <div className="p-4 bg-grey login-container">
                 <h2 className="textregis text-center mb-4">Login Page</h2>
+                
+                {location.state?.registered && (
+                  <div className="alert alert-success text-center mb-3">
+                    {location.state.message}
+                  </div>
+                )}
+
                 <form onSubmit={handleSubmit} autoComplete='off'>
                   <div className="form-group mb-3 position-relative">
                     <input
@@ -99,15 +114,22 @@ const LoginPage = () => {
                     {errors.email && <span className="error">{errors.email}</span>}
                   </div>
                   
-                  <div className="form-group mb-3">
+                  <div className="form-group mb-3 position-relative">
                     <input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       name="password"
                       placeholder='Enter Your Password'
                       value={loginData.password}
                       onChange={handleChange}
-                      className={`form-control ${errors.password ? 'error-input' : ''}`}
+                      className={`form-control pe-5 ${errors.password ? 'error-input' : ''}`}
                     />
+                    <button 
+                      type="button" 
+                      className="btn btn-sm btn-link position-absolute top-50 end-0 translate-middle-y me-2 text-white text-decoration-none"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? '🙈' : '👁️'}
+                    </button>
                     {errors.password && <span className="error">{errors.password}</span>}
                   </div>
 
@@ -124,14 +146,19 @@ const LoginPage = () => {
                   </div>
 
                   <div className="form-actions d-flex gap-2">
-                    <button type="submit" className="btn btn-success flex-grow-1">Login</button>
-                    <button type="button" className="btn btn-danger flex-grow-1" onClick={handleCancel}>Cancel</button>
+                    <button type="submit" className="btn btn-success flex-grow-1" disabled={isLoading}>
+                      {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
+                    <button type="button" className="btn btn-danger flex-grow-1" onClick={handleCancel} disabled={isLoading}>Cancel</button>
                   </div>
 
                   <div className="forgot-password text-center mt-3">
-                    <Link to="/register" className="text-white">Don't have an account? Register</Link>
+                    <Link to="/register" className="text-white text-decoration-underline">Don't have an account? Register</Link>
                   </div>
-                  {loginMessage && <div className="alert alert-danger mt-3 text-center">{loginMessage}</div>}
+                  
+                  {loginMessage && !location.state?.registered && (
+                    <div className="alert alert-danger mt-3 text-center">{loginMessage}</div>
+                  )}
                 </form>
               </div>
             </div>
