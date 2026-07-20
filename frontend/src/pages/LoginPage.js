@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import '../styles/css.css';
 import NavbarSimple from '../components/NavbarSimple';
 import axios from 'axios';
 import API_URL from '../api/config';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useContext(AuthContext);
 
   const [loginData, setLoginData] = useState({
     email: '',
@@ -58,7 +60,7 @@ const LoginPage = () => {
 
         if (response.status === 200) {
           const userData = response.data.user;
-          localStorage.setItem('user', JSON.stringify(userData));
+          login(userData);
           navigate('/profile');
         }
       } catch (error) {

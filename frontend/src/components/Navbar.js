@@ -1,17 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Navbar as BsNavbar, Container, Form, FormControl, Button, Nav, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/image/phone2.png';
 import '../styles/css.css';
+import { AuthContext } from '../context/AuthContext';
 
 function Navbar() {
     const navigate = useNavigate();
+    const { user, isAuthenticated, logout } = useContext(AuthContext);
     const [searchTerm, setSearchTerm] = useState('');
     const [showDropdown, setShowDropdown] = useState(false);
     const searchRef = useRef(null);
 
     const searchableItems = [
-        // Pages
         { name: 'Home', path: '/', category: 'Page' },
         { name: 'Products', path: '/product', category: 'Page' },
         { name: 'About Us', path: '/about', category: 'Page' },
@@ -19,8 +20,6 @@ function Navbar() {
         { name: 'Services', path: '/service', category: 'Page' },
         { name: 'My Profile', path: '/profile', category: 'Page' },
         { name: 'Shopping Cart', path: '/cart', category: 'Page' },
-
-        // Products
         { name: 'Samsung S24 Ultra', path: '/product', category: 'Product' },
         { name: 'iPhone 15 Pro', path: '/product', category: 'Product' },
         { name: 'OnePlus 12', path: '/product', category: 'Product' },
@@ -68,7 +67,11 @@ function Navbar() {
         setShowDropdown(false);
     };
 
-    // Close dropdown when clicking outside
+    const handleLogoutClick = async () => {
+        await logout();
+        navigate('/login');
+    };
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -162,15 +165,40 @@ function Navbar() {
                             )}
                         </div>
 
+                        {/* Account Dropdown with Auth Integration */}
                         <Dropdown align="end">
-                            <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                                Account
+                            <Dropdown.Toggle variant={isAuthenticated ? "primary" : "secondary"} id="dropdown-basic">
+                                <i className="fa-solid fa-user me-1"></i>
+                                {isAuthenticated ? (user?.fullName ? user.fullName.split(' ')[0] : 'Account') : 'Account'}
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item as={Link} to="/profile">Profile</Dropdown.Item>
-                                <Dropdown.Item as={Link} to="/cart">Cart</Dropdown.Item>
-                                <Dropdown.Item as={Link} to="/register">Register</Dropdown.Item>
-                                <Dropdown.Item as={Link} to="/login">Login</Dropdown.Item>
+                                {isAuthenticated ? (
+                                    <>
+                                        <Dropdown.Item as={Link} to="/profile">
+                                            <i className="fa-solid fa-id-card me-2 text-primary"></i>My Profile
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/cart">
+                                            <i className="fa-solid fa-cart-shopping me-2 text-success"></i>Cart
+                                        </Dropdown.Item>
+                                        <Dropdown.Divider />
+                                        <Dropdown.Item onClick={handleLogoutClick} className="text-danger">
+                                            <i className="fa-solid fa-right-from-bracket me-2"></i>Logout
+                                        </Dropdown.Item>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Dropdown.Item as={Link} to="/login">
+                                            <i className="fa-solid fa-key me-2 text-primary"></i>Login
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/register">
+                                            <i className="fa-solid fa-user-plus me-2 text-success"></i>Register
+                                        </Dropdown.Item>
+                                        <Dropdown.Divider />
+                                        <Dropdown.Item as={Link} to="/cart">
+                                            <i className="fa-solid fa-cart-shopping me-2 text-secondary"></i>Cart
+                                        </Dropdown.Item>
+                                    </>
+                                )}
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>

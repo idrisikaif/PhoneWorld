@@ -1,18 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
 import '../styles/css.css';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import API_URL from '../api/config';
+import { AuthContext } from '../context/AuthContext';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  
-  // Pre-load user from localStorage if available to eliminate screen flicker
+  const { logout, setUser: setAuthUser } = useContext(AuthContext);
+
   const [user, setUser] = useState(() => {
-    const cachedUser = localStorage.getItem('user');
-    return cachedUser ? JSON.parse(cachedUser) : null;
+    try {
+      const cachedUser = localStorage.getItem('user');
+      return cachedUser ? JSON.parse(cachedUser) : null;
+    } catch (e) {
+      return null;
+    }
   });
 
   const [isLoading, setIsLoading] = useState(!user);
@@ -23,11 +28,13 @@ const ProfilePage = () => {
       try {
         const response = await axios.get(`${API_URL}/profile`, { withCredentials: true });
         setUser(response.data);
+        setAuthUser(response.data);
         localStorage.setItem('user', JSON.stringify(response.data));
         setError('');
       } catch (error) {
         if (!user) {
           setError('Session expired or authentication failed. Please log in.');
+          setAuthUser(null);
           localStorage.removeItem('user');
           setTimeout(() => navigate('/login'), 1500);
         }
@@ -40,14 +47,8 @@ const ProfilePage = () => {
   }, [navigate]);
 
   const handleLogout = async () => {
-    try {
-      await axios.post(`${API_URL}/logout`, {}, { withCredentials: true });
-    } catch (error) {
-      console.error('Logout request failed', error);
-    } finally {
-      localStorage.removeItem('user');
-      navigate('/login');
-    }
+    await logout();
+    navigate('/login');
   };
 
   const getInitial = (name) => {
