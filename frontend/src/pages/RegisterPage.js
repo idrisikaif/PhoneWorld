@@ -1,8 +1,3 @@
-// ====================================================
-// BEGINNER STUDENT CODE - REGISTER PAGE (frontend/src/pages/RegisterPage.js)
-// ====================================================
-// Simple user registration form with validation and backend submission.
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -14,7 +9,6 @@ import '../styles/css.css';
 const RegisterPage = () => {
   const navigate = useNavigate();
 
-  // Beginner State for Form Input Fields
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -27,7 +21,6 @@ const RegisterPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Input Change Handler
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -35,19 +28,19 @@ const RegisterPage = () => {
     });
   };
 
-  // Form Submit Handler
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setErrorMessage('');
 
     try {
-      const response = await axios.post(`${API_URL}/register`, formData);
+      const response = await axios.post(`${API_URL}/register`, formData, { withCredentials: true });
       if (response.data) {
         navigate('/login', { state: { message: 'Registration successful! Please log in.' } });
       }
     } catch (err) {
-      setErrorMessage(err.response?.data?.error || 'Registration failed. Try again.');
+      const msg = err.response?.data?.message || err.response?.data?.error || 'Registration failed. Please try again.';
+      setErrorMessage(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -120,6 +113,7 @@ const RegisterPage = () => {
                   className="search-input"
                   value={formData.mobileNumber}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
 
@@ -131,6 +125,7 @@ const RegisterPage = () => {
                   className="search-input"
                   value={formData.dob}
                   onChange={handleInputChange}
+                  required
                 />
               </div>
 
