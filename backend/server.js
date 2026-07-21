@@ -16,7 +16,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: process.env.FRONTEND_URL || true,
   credentials: true
 }));
 app.use(express.json());
@@ -30,6 +30,10 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Kaif Phones Backend Server is running' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
