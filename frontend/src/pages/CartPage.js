@@ -1,9 +1,3 @@
-// ====================================================
-// BEGINNER STUDENT CODE - CART PAGE (frontend/src/pages/CartPage.js)
-// ====================================================
-// Shopping cart page showing selected products, quantity adjustments,
-// promo discount code, and order subtotal calculations.
-
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
@@ -15,22 +9,18 @@ import '../styles/css.css';
 const CartPage = () => {
   const navigate = useNavigate();
   
-  // Access Cart and Auth state from Context
   const { cart, addToCart, removeFromCart, deleteFromCart, clearCart } = useContext(CartContext);
   const { isAuthenticated } = useContext(AuthContext);
 
-  // Student State for Promo Coupon Code
   const [couponInput, setCouponInput] = useState('');
   const [discountPercent, setDiscountPercent] = useState(0);
   const [couponNotice, setCouponNotice] = useState('');
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  // Calculate order subtotal
   const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
   const discountAmount = (subtotal * discountPercent) / 100;
   const grandTotal = subtotal - discountAmount;
 
-  // Simple handler to apply promo coupon KAIF10
   const handleApplyCoupon = (e) => {
     e.preventDefault();
     if (couponInput.trim().toUpperCase() === 'KAIF10') {
@@ -41,18 +31,40 @@ const CartPage = () => {
     }
   };
 
-  // Simple handler for order checkout
   const handleCheckout = () => {
     if (!isAuthenticated) {
       navigate('/login');
       return;
     }
+
+    // Generate new order item
+    const orderId = `ORD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderDate = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const itemsSummary = cart.map(item => `${item.title} (${item.quantity}x)`).join(', ');
+
+    const newOrder = {
+      id: orderId,
+      date: orderDate,
+      items: itemsSummary,
+      total: grandTotal,
+      status: "Processing (Before Transit)",
+      canCancel: true
+    };
+
+    // Save order to localStorage
+    try {
+      const existingOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existingOrders]));
+    } catch (e) {
+      console.error('Error saving order:', e);
+    }
+
     setOrderPlaced(true);
     setTimeout(() => {
       clearCart();
       setOrderPlaced(false);
       navigate('/profile');
-    }, 2000);
+    }, 1500);
   };
 
   return (
@@ -66,15 +78,13 @@ const CartPage = () => {
             <p>{cart.length > 0 ? `You have ${cart.length} item(s) in your cart` : 'Your cart is empty'}</p>
           </div>
 
-          {/* Order Success Banner */}
           {orderPlaced && (
-            <div className="empty-box text-center">
-              <h3>Order Placed Successfully!</h3>
-              <p>Thank you for shopping at Kaif Phones. Redirecting to your Profile...</p>
+            <div className="empty-box text-center" style={{ backgroundColor: '#d1e7dd', borderColor: '#badbcc' }}>
+              <h3 style={{ color: '#0f5132' }}>Order Placed Successfully!</h3>
+              <p style={{ color: '#0f5132' }}>Thank you for shopping at Kaif Phones. Redirecting to your Profile...</p>
             </div>
           )}
 
-          {/* Cart View: Empty vs Cart Items */}
           {cart.length === 0 ? (
             <div className="empty-box">
               <h3>Your Shopping Cart is Empty</h3>
@@ -94,7 +104,6 @@ const CartPage = () => {
                         <p style={{ fontWeight: 'bold', color: '#0d6efd' }}>₹{item.price.toLocaleString('en-IN')}</p>
                       </div>
 
-                      {/* Quantity Controls */}
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <button type="button" className="filter-btn" onClick={() => removeFromCart(item)}>-</button>
                         <span style={{ fontWeight: 'bold' }}>{item.quantity}</span>
@@ -114,7 +123,6 @@ const CartPage = () => {
                 </div>
               </div>
 
-              {/* Sidebar Order Summary */}
               <div style={{ flex: '1 1 300px', backgroundColor: '#ffffff', padding: '20px', borderRadius: '8px', border: '1px solid #e9ecef' }}>
                 <h3>Order Summary</h3>
                 
@@ -154,8 +162,8 @@ const CartPage = () => {
                   <span style={{ color: '#0d6efd' }}>₹{grandTotal.toLocaleString('en-IN')}</span>
                 </div>
 
-                <button type="button" className="primary-btn" style={{ width: '100%', textAlign: 'center' }} onClick={handleCheckout}>
-                  Proceed to Checkout
+                <button type="button" className="primary-btn" style={{ width: '100%', textAlign: 'center' }} onClick={handleCheckout} disabled={orderPlaced}>
+                  {orderPlaced ? "Placing Order..." : "Proceed to Checkout"}
                 </button>
               </div>
             </div>

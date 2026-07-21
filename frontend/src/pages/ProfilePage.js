@@ -23,8 +23,15 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(!user);
   const [activeTab, setActiveTab] = useState('profile');
 
-  // Dynamic user order state (Empty for new accounts)
-  const [orders, setOrders] = useState([]);
+  // Load user orders from localStorage
+  const [orders, setOrders] = useState(() => {
+    try {
+      const saved = localStorage.getItem('userOrders');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -50,13 +57,17 @@ const ProfilePage = () => {
   };
 
   const handleCancelOrder = (orderId) => {
-    setOrders(prevOrders =>
-      prevOrders.map(order =>
-        order.id === orderId
-          ? { ...order, status: "Cancelled", canCancel: false }
-          : order
-      )
+    const updatedOrders = orders.map(order =>
+      order.id === orderId
+        ? { ...order, status: "Cancelled", canCancel: false }
+        : order
     );
+    setOrders(updatedOrders);
+    try {
+      localStorage.setItem('userOrders', JSON.stringify(updatedOrders));
+    } catch (e) {
+      console.error('Error saving updated orders:', e);
+    }
   };
 
   return (
