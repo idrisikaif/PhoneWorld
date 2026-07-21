@@ -1,9 +1,3 @@
-// ====================================================
-// BEGINNER STUDENT CODE - PROFILE PAGE (frontend/src/pages/ProfilePage.js)
-// ====================================================
-// User account profile dashboard displaying account info, order history,
-// and order cancellation options.
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -17,7 +11,6 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { logout, setUser: setAuthUser } = useContext(AuthContext);
 
-  // Initialize user profile from localStorage cache
   const [user, setUser] = useState(() => {
     try {
       const cached = localStorage.getItem('user');
@@ -28,37 +21,11 @@ const ProfilePage = () => {
   });
 
   const [isLoading, setIsLoading] = useState(!user);
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'orders'
+  const [activeTab, setActiveTab] = useState('profile');
 
-  // Student Order History State
-  const [orders, setOrders] = useState([
-    {
-      id: "ORD-2026-9043",
-      date: "July 20, 2026",
-      items: "AirPods Pro (2nd Gen) (1x)",
-      total: 17900,
-      status: "Processing (Before Transit)",
-      canCancel: true
-    },
-    {
-      id: "ORD-2026-8812",
-      date: "July 18, 2026",
-      items: "Samsung S24 Ultra (1x)",
-      total: 129999,
-      status: "Delivered",
-      canCancel: false
-    },
-    {
-      id: "ORD-2026-7491",
-      date: "July 10, 2026",
-      items: "iPhone 14 MagSafe Cover (1x)",
-      total: 450,
-      status: "Delivered",
-      canCancel: false
-    }
-  ]);
+  // Dynamic user order state (Empty for new accounts)
+  const [orders, setOrders] = useState([]);
 
-  // Fetch backend profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -77,13 +44,11 @@ const ProfilePage = () => {
     fetchProfile();
   }, [navigate, setAuthUser, user]);
 
-  // Logout Handler
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
 
-  // Order Cancellation Handler (Before Transit)
   const handleCancelOrder = (orderId) => {
     setOrders(prevOrders =>
       prevOrders.map(order =>
@@ -106,7 +71,6 @@ const ProfilePage = () => {
               Welcome back, {user ? user.fullName : 'Customer'}!
             </p>
 
-            {/* Profile vs Orders Tab Navigation */}
             <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
               <button 
                 type="button" 
@@ -156,45 +120,51 @@ const ProfilePage = () => {
                 </div>
               </div>
             ) : activeTab === 'orders' ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {orders.map((order, idx) => (
-                  <div key={idx} style={{ padding: '16px', backgroundColor: '#ffffff', borderRadius: '6px', border: '1px solid #e9ecef' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                      <strong>{order.id}</strong>
-                      <span style={{ 
-                        fontSize: '0.8rem', 
-                        fontWeight: 'bold', 
-                        padding: '2px 8px', 
-                        borderRadius: '4px',
-                        backgroundColor: order.status === 'Delivered' ? '#d1e7dd' : order.status === 'Cancelled' ? '#f8d7da' : '#fff3cd',
-                        color: order.status === 'Delivered' ? '#0f5132' : order.status === 'Cancelled' ? '#842029' : '#664d03'
-                      }}>
-                        {order.status}
-                      </span>
+              orders.length === 0 ? (
+                <div className="text-center" style={{ padding: '24px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
+                  <p style={{ color: '#6c757d', marginBottom: '16px' }}>No orders placed yet.</p>
+                  <Link to="/product" className="primary-btn">Browse Products & Place Order</Link>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {orders.map((order, idx) => (
+                    <div key={idx} style={{ padding: '16px', backgroundColor: '#ffffff', borderRadius: '6px', border: '1px solid #e9ecef' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                        <strong>{order.id}</strong>
+                        <span style={{ 
+                          fontSize: '0.8rem', 
+                          fontWeight: 'bold', 
+                          padding: '2px 8px', 
+                          borderRadius: '4px',
+                          backgroundColor: order.status === 'Delivered' ? '#d1e7dd' : order.status === 'Cancelled' ? '#f8d7da' : '#fff3cd',
+                          color: order.status === 'Delivered' ? '#0f5132' : order.status === 'Cancelled' ? '#842029' : '#664d03'
+                        }}>
+                          {order.status}
+                        </span>
+                      </div>
+
+                      <p style={{ fontSize: '0.88rem', color: '#6c757d', marginBottom: '4px' }}>Date: {order.date}</p>
+                      <p style={{ fontSize: '0.88rem', color: '#6c757d', marginBottom: '8px' }}>Items: {order.items}</p>
+                      <p style={{ fontWeight: 'bold', color: '#0d6efd' }}>Total: ₹{order.total.toLocaleString('en-IN')}</p>
+
+                      {order.canCancel ? (
+                        <button 
+                          type="button" 
+                          className="logout-btn" 
+                          style={{ marginTop: '8px', fontSize: '0.8rem', padding: '6px 12px' }}
+                          onClick={() => handleCancelOrder(order.id)}
+                        >
+                          Cancel Order (Before Transit)
+                        </button>
+                      ) : (
+                        <small style={{ color: '#6c757d', display: 'block', marginTop: '8px' }}>
+                          {order.status === "Cancelled" ? "Order Cancelled" : "Delivered (Return Only)"}
+                        </small>
+                      )}
                     </div>
-
-                    <p style={{ fontSize: '0.88rem', color: '#6c757d', marginBottom: '4px' }}>Date: {order.date}</p>
-                    <p style={{ fontSize: '0.88rem', color: '#6c757d', marginBottom: '8px' }}>Items: {order.items}</p>
-                    <p style={{ fontWeight: 'bold', color: '#0d6efd' }}>Total: ₹{order.total.toLocaleString('en-IN')}</p>
-
-                    {/* Order Cancellation Option (Before Transit) */}
-                    {order.canCancel ? (
-                      <button 
-                        type="button" 
-                        className="logout-btn" 
-                        style={{ marginTop: '8px', fontSize: '0.8rem', padding: '6px 12px' }}
-                        onClick={() => handleCancelOrder(order.id)}
-                      >
-                        Cancel Order (Before Transit)
-                      </button>
-                    ) : (
-                      <small style={{ color: '#6c757d', display: 'block', marginTop: '8px' }}>
-                        {order.status === "Cancelled" ? "Order Cancelled" : "Delivered (Return Only)"}
-                      </small>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )
             ) : null}
           </div>
         </div>

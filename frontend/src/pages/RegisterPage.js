@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import API_URL from '../api/config';
+import { AuthContext } from '../context/AuthContext';
 import '../styles/css.css';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const { setUser } = useContext(AuthContext);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -35,7 +37,11 @@ const RegisterPage = () => {
 
     try {
       const response = await axios.post(`${API_URL}/register`, formData, { withCredentials: true });
-      if (response.data) {
+      if (response.data && response.data.user) {
+        setUser(response.data.user);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        navigate('/');
+      } else {
         navigate('/login', { state: { message: 'Registration successful! Please log in.' } });
       }
     } catch (err) {

@@ -10,7 +10,7 @@ const getCookieOptions = () => ({
   maxAge: 3600000
 });
 
-// Register User
+// Register User (with Auto-Login)
 const registerUser = async (req, res) => {
   try {
     const { fullName, mobileNumber, email, dob, gender, password } = req.body;
@@ -33,7 +33,28 @@ const registerUser = async (req, res) => {
     });
 
     await newUser.save();
-    return res.status(201).json({ message: 'Registration successful! You can now log in.' });
+
+    // Auto-Login: Generate JWT Token and set HTTP-Only Cookie
+    const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret_key';
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email },
+      JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.cookie('token', token, getCookieOptions());
+
+    return res.status(201).json({
+      message: 'Registration successful! Logged in automatically.',
+      user: {
+        id: newUser._id,
+        fullName: newUser.fullName,
+        email: newUser.email,
+        mobileNumber: newUser.mobileNumber,
+        dob: newUser.dob,
+        gender: newUser.gender
+      }
+    });
 
   } catch (error) {
     console.error('Registration Error:', error);
