@@ -1,59 +1,53 @@
+// ====================================================
+// BEGINNER STUDENT CODE - ABOUT PAGE (frontend/src/pages/AboutPage.js)
+// ====================================================
+// Simple about page introducing Kaif Phones store mission and store history.
+
 import React from 'react';
-import { Container } from 'react-bootstrap';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import '../styles/css.css';
 
 const AboutPage = () => {
   return (
-    <div>
+    <div className="page-wrapper">
       <Navbar />
-      <div className='about py-5'>
-        <Container>
-          <h1 className="text-center mb-5 display-4 fw-bold">About Kaif Phones</h1>
-          
-          <section className="mt-4 p-4 bg-white rounded shadow-sm">
-            <h2 className="text-primary">Mission Statement</h2>
-            <p className="lead">At Kaif Phones, our mission is to offer a comprehensive range of phones and accessories, delivering exceptional quality and value to our customers. We are dedicated to enhancing your mobile experience with innovative products and outstanding service.</p>
-          </section>
 
-          <section className="mt-5 p-4 bg-white rounded shadow-sm">
-            <h2 className="text-primary">History</h2>
-            <p>Founded in 2018, Kaif Phones has quickly established itself as a leader in the phone and accessory industry. Our journey began with a simple goal: to provide high-quality mobile devices and accessories that cater to the diverse needs of our customers.</p>
-            <p>Over the years, we have grown from a small startup into a prominent player in the market, thanks to our unwavering commitment to excellence. We expanded our product range to include a variety of accessories, ensuring that our customers could find everything they needed in one place.</p>
-          </section>
+      <div className="section-padding">
+        <div className="container" style={{ maxWidth: '800px' }}>
+          <div className="section-header">
+            <h2>About Kaif Phones</h2>
+            <p>Your premier destination for smartphones, accessories, and mobile repairs in Bhiwandi.</p>
+          </div>
 
-          <section className="mt-5 p-4 bg-white rounded shadow-sm">
-            <h2 className="text-primary">Values</h2>
-            <p>At Kaif Phones, our core values guide everything we do:</p>
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item"><strong>Customer-Centricity:</strong> We prioritize our customers' needs and strive to exceed their expectations.</li>
-              <li className="list-group-item"><strong>Quality:</strong> We are committed to products that meet the highest standards of durability.</li>
-              <li className="list-group-item"><strong>Innovation:</strong> We embrace new technologies to enhance our products and services.</li>
-            </ul>
-          </section>
+          <div className="feature-card" style={{ padding: '32px', marginBottom: '24px' }}>
+            <h3 style={{ color: '#0d6efd', marginBottom: '12px' }}>Our Mission</h3>
+            <p style={{ color: '#6c757d', marginBottom: '16px', lineHeight: '1.7' }}>
+              At Kaif Phones, our goal is to provide original, high-quality smartphones and genuine mobile accessories at affordable prices. We believe in customer transparency, honest pricing, and dependable post-sale support.
+            </p>
+            <p style={{ color: '#6c757d', lineHeight: '1.7' }}>
+              Located in Gaibi Nagar near Noorani Masjid, Bhiwandi, our store serves thousands of happy local customers with authentic brand products from Samsung, Apple, OnePlus, Google, and Sony.
+            </p>
+          </div>
 
-          <section className="mt-5 p-4 bg-white rounded shadow-sm mb-4">
-            <h2 className="text-primary">Awards and Recognition</h2>
-            <p>Our dedication has been recognized by various industry accolades:</p>
-            <div className="row g-3">
-              <div className="col-md-4">
-                <div className="p-3 border rounded h-100 bg-light">
-                  <strong>Best Mobile Accessory Retailer 2022</strong>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="p-3 border rounded h-100 bg-light">
-                  <strong>Top Emerging Brand 2021</strong>
-                </div>
-              </div>
-              <div className="col-md-4">
-                <div className="p-3 border rounded h-100 bg-light">
-                  <strong>Customer Satisfaction Excellence 2020</strong>
-                </div>
-              </div>
+          <div className="features-grid">
+            <div className="feature-card">
+              <h3>Genuine Products</h3>
+              <p>100% factory-sealed original products backed by official manufacturer warranties.</p>
             </div>
-          </section>
-        </Container>
+            <div className="feature-card">
+              <h3>Expert Repair Shop</h3>
+              <p>Specialized mobile screen replacements, battery repairs, and motherboard diagnostics.</p>
+            </div>
+            <div className="feature-card">
+              <h3>Friendly Customer Care</h3>
+              <p>Dedicated local support on WhatsApp and phone for all device inquiries and assistance.</p>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

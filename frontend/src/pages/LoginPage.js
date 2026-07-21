@@ -1,176 +1,119 @@
+// ====================================================
+// BEGINNER STUDENT CODE - LOGIN PAGE (frontend/src/pages/LoginPage.js)
+// ====================================================
+// Standard React login form with email/password input handling, validation,
+// error state, and password visibility toggle.
+
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import '../styles/css.css';
-import NavbarSimple from '../components/NavbarSimple';
-import axios from 'axios';
-import API_URL from '../api/config';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { AuthContext } from '../context/AuthContext';
+import '../styles/css.css';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Access login function from AuthContext
   const { login } = useContext(AuthContext);
 
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: '',
-    rememberMe: false,
-  });
-
-  const [errors, setErrors] = useState({
-    email: '',
-    password: '',
-  });
-
+  // Student State for Login Form Fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loginMessage, setLoginMessage] = useState(location.state?.message || '');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setLoginData({ ...loginData, [name]: type === 'checkbox' ? checked : value });
-  };
+  // Form submit handler
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage('');
 
-  const validateLogin = () => {
-    let errors = {};
-    let isValid = true;
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(loginData.email)) {
-      errors.email = 'Please enter a valid email address';
-      isValid = false;
-    }
-
-    if (loginData.password.length < 6) {
-      errors.password = 'Password must be at least 6 characters long';
-      isValid = false;
-    }
-
-    setErrors(errors);
-    return isValid;
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (validateLogin()) {
-      setIsLoading(true);
-      setLoginMessage('');
-      try {
-        const response = await axios.post(`${API_URL}/login`, loginData, { withCredentials: true });
-
-        if (response.status === 200) {
-          const userData = response.data.user;
-          login(userData);
-          navigate('/profile');
-        }
-      } catch (error) {
-        setLoginMessage(error.response?.data?.message || 'Invalid email or password.');
-      } finally {
-        setIsLoading(false);
+    try {
+      const result = await login(email, password);
+      if (result.success) {
+        const redirectTo = location.state?.from?.pathname || '/profile';
+        navigate(redirectTo, { replace: true });
+      } else {
+        setErrorMessage(result.message || 'Login failed. Invalid email or password.');
       }
-    } else {
-      setLoginMessage('Login failed. Please check your email and password.');
+    } catch (err) {
+      setErrorMessage('Server connection error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleCancel = (event) => {
-    event.preventDefault();
-    setLoginData({
-      email: '',
-      password: '',
-      rememberMe: false,
-    });
-    setErrors({
-      email: '',
-      password: '',
-    });
-    setLoginMessage('');
   };
 
   return (
-    <>
-      <NavbarSimple />
-      <div className='login py-5'>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-12 col-sm-10 col-md-8 col-lg-5">
-              <div className="p-4 bg-grey login-container">
-                <h2 className="textregis text-center mb-4">Login Page</h2>
-                
-                {location.state?.registered && (
-                  <div className="alert alert-success text-center mb-3">
-                    {location.state.message}
-                  </div>
-                )}
+    <div className="page-wrapper">
+      <Navbar />
 
-                <form onSubmit={handleSubmit} autoComplete='off'>
-                  <div className="form-group mb-3">
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder='Enter Your Email'
-                      value={loginData.email}
-                      onChange={handleChange}
-                      className={`form-control ${errors.email ? 'error-input' : ''}`}
-                    />
-                    {errors.email && <span className="error">{errors.email}</span>}
-                  </div>
-                  
-                  <div className="form-group mb-3">
-                    <div className="position-relative">
-                      <input
-                        type={showPassword ? 'text' : 'password'}
-                        name="password"
-                        placeholder='Enter Your Password'
-                        value={loginData.password}
-                        onChange={handleChange}
-                        className={`form-control pe-5 ${errors.password ? 'error-input' : ''}`}
-                      />
-                      <button 
-                        type="button" 
-                        className="btn btn-sm position-absolute top-50 end-0 translate-middle-y me-2 border-0 bg-transparent text-white p-0"
-                        onClick={() => setShowPassword(!showPassword)}
-                        style={{ zIndex: 10, fontSize: '1.2rem', lineHeight: 1 }}
-                      >
-                        {showPassword ? '🙈' : '👁️'}
-                      </button>
-                    </div>
-                    {errors.password && <span className="error">{errors.password}</span>}
-                  </div>
+      <div className="section-padding">
+        <div className="container" style={{ maxWidth: '480px' }}>
+          <div className="feature-card" style={{ padding: '32px' }}>
+            <h2 className="text-center" style={{ marginBottom: '8px' }}>User Account Login</h2>
+            <p className="text-center" style={{ color: '#6c757d', marginBottom: '24px' }}>
+              Sign in to your Kaif Phones account
+            </p>
 
-                  <div className="form-check mb-3">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="rememberMe"
-                      name="rememberMe"
-                      checked={loginData.rememberMe}
-                      onChange={handleChange}
-                    />
-                    <label className="form-check-label text-white" htmlFor="rememberMe">Remember Me</label>
-                  </div>
-
-                  <div className="form-actions d-flex gap-2">
-                    <button type="submit" className="btn btn-success flex-grow-1" disabled={isLoading}>
-                      {isLoading ? 'Logging in...' : 'Login'}
-                    </button>
-                    <button type="button" className="btn btn-danger flex-grow-1" onClick={handleCancel} disabled={isLoading}>Cancel</button>
-                  </div>
-
-                  <div className="forgot-password text-center mt-3">
-                    <Link to="/register" className="text-white text-decoration-underline">Don't have an account? Register</Link>
-                  </div>
-                  
-                  {loginMessage && !location.state?.registered && (
-                    <div className="alert alert-danger mt-3 text-center">{loginMessage}</div>
-                  )}
-                </form>
+            {/* Error Message Alert */}
+            {errorMessage && (
+              <div style={{ backgroundColor: '#f8d7da', color: '#842029', padding: '12px', borderRadius: '4px', marginBottom: '16px', fontSize: '0.9rem' }}>
+                {errorMessage}
               </div>
-            </div>
+            )}
+
+            {/* Login Form */}
+            <form onSubmit={handleLoginSubmit}>
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Email Address</label>
+                <input
+                  type="email"
+                  placeholder="Enter registered email"
+                  className="search-input"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '6px', fontWeight: '500' }}>Password</label>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter account password"
+                    className="search-input"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="filter-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" className="primary-btn" style={{ width: '100%', textAlign: 'center' }} disabled={isSubmitting}>
+                {isSubmitting ? "Logging in..." : "Login to Account"}
+              </button>
+            </form>
+
+            <p className="text-center" style={{ marginTop: '20px', fontSize: '0.9rem', color: '#6c757d' }}>
+              Don't have an account yet? <Link to="/register" style={{ color: '#0d6efd', fontWeight: 'bold' }}>Register Here</Link>
+            </p>
           </div>
         </div>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 };
 

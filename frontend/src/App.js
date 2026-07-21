@@ -11,31 +11,34 @@ import ProfilePage from './pages/ProfilePage';
 import CartPage from './pages/CartPage'; 
 import { CartProvider } from './context/CartContext'; 
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
-        <Routes>
-          <Route exact path="/" element={<HomePage />} />
-          <Route exact path="/register" element={<RegisterPage />} />
-          <Route exact path="/login" element={<LoginPage />} />
-          <Route 
-            exact 
-            path="/profile" 
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            } 
-          />
-          <Route exact path="/contact" element={<ContactPage />} />
-          <Route exact path="/service" element={<ServicesPage />} />
-          <Route exact path="/about" element={<AboutPage />} />
-          <Route exact path="/product" element={<ProductPage />} />
-          <Route exact path="/cart" element={<CartPage />} /> 
-        </Routes>
+        <ToastProvider>
+          <Routes>
+            <Route exact path="/" element={<HomePage />} />
+            <Route exact path="/register" element={<RegisterPage />} />
+            <Route exact path="/login" element={<LoginPage />} />
+            <Route 
+              exact 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route exact path="/contact" element={<ContactPage />} />
+            <Route exact path="/service" element={<ServicesPage />} />
+            <Route exact path="/about" element={<AboutPage />} />
+            <Route exact path="/product" element={<ProductPage />} />
+            <Route exact path="/cart" element={<CartPage />} /> 
+          </Routes>
+        </ToastProvider>
       </CartProvider>
     </AuthProvider>
   );

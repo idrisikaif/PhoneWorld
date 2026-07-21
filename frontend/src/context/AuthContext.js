@@ -16,7 +16,6 @@ export const AuthProvider = ({ children }) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  // Sync auth status with backend on mount
   useEffect(() => {
     const verifyAuth = async () => {
       try {
@@ -24,7 +23,6 @@ export const AuthProvider = ({ children }) => {
         setUser(response.data);
         localStorage.setItem('user', JSON.stringify(response.data));
       } catch (error) {
-        // If profile check fails (401/403), user session is invalid
         setUser(null);
         localStorage.removeItem('user');
       } finally {
@@ -35,9 +33,19 @@ export const AuthProvider = ({ children }) => {
     verifyAuth();
   }, []);
 
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+  const login = async (email, password) => {
+    try {
+      const response = await axios.post(`${API_URL}/login`, { email, password }, { withCredentials: true });
+      if (response.data && response.data.user) {
+        setUser(response.data.user);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        return { success: true, user: response.data.user };
+      }
+      return { success: false, message: 'Invalid response from server.' };
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Invalid email address or password.';
+      return { success: false, message: errorMsg };
+    }
   };
 
   const logout = async () => {

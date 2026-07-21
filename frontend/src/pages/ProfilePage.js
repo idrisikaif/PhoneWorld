@@ -1,153 +1,207 @@
+// ====================================================
+// BEGINNER STUDENT CODE - PROFILE PAGE (frontend/src/pages/ProfilePage.js)
+// ====================================================
+// User account profile dashboard displaying account info, order history,
+// and order cancellation options.
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
-import '../styles/css.css';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import API_URL from '../api/config';
 import { AuthContext } from '../context/AuthContext';
+import '../styles/css.css';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { logout, setUser: setAuthUser } = useContext(AuthContext);
 
+  // Initialize user profile from localStorage cache
   const [user, setUser] = useState(() => {
     try {
-      const cachedUser = localStorage.getItem('user');
-      return cachedUser ? JSON.parse(cachedUser) : null;
+      const cached = localStorage.getItem('user');
+      return cached ? JSON.parse(cached) : null;
     } catch (e) {
       return null;
     }
   });
 
   const [isLoading, setIsLoading] = useState(!user);
-  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('profile'); // 'profile' | 'orders'
 
+  // Student Order History State
+  const [orders, setOrders] = useState([
+    {
+      id: "ORD-2026-9043",
+      date: "July 20, 2026",
+      items: "AirPods Pro (2nd Gen) (1x)",
+      total: 17900,
+      status: "Processing (Before Transit)",
+      canCancel: true
+    },
+    {
+      id: "ORD-2026-8812",
+      date: "July 18, 2026",
+      items: "Samsung S24 Ultra (1x)",
+      total: 129999,
+      status: "Delivered",
+      canCancel: false
+    },
+    {
+      id: "ORD-2026-7491",
+      date: "July 10, 2026",
+      items: "iPhone 14 MagSafe Cover (1x)",
+      total: 450,
+      status: "Delivered",
+      canCancel: false
+    }
+  ]);
+
+  // Fetch backend profile data
   useEffect(() => {
-    const fetchProfileData = async () => {
+    const fetchProfile = async () => {
       try {
         const response = await axios.get(`${API_URL}/profile`, { withCredentials: true });
         setUser(response.data);
         setAuthUser(response.data);
         localStorage.setItem('user', JSON.stringify(response.data));
-        setError('');
-      } catch (error) {
+      } catch (err) {
         if (!user) {
-          setError('Session expired or authentication failed. Please log in.');
-          setAuthUser(null);
-          localStorage.removeItem('user');
-          setTimeout(() => navigate('/login'), 1500);
+          navigate('/login');
         }
       } finally {
         setIsLoading(false);
       }
     };
-    fetchProfileData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [navigate]);
+    fetchProfile();
+  }, [navigate, setAuthUser, user]);
 
+  // Logout Handler
   const handleLogout = async () => {
     await logout();
     navigate('/login');
   };
 
-  const getInitial = (name) => {
-    return name ? name.charAt(0).toUpperCase() : 'U';
+  // Order Cancellation Handler (Before Transit)
+  const handleCancelOrder = (orderId) => {
+    setOrders(prevOrders =>
+      prevOrders.map(order =>
+        order.id === orderId
+          ? { ...order, status: "Cancelled", canCancel: false }
+          : order
+      )
+    );
   };
 
   return (
-    <>
+    <div className="page-wrapper">
       <Navbar />
-      <div className="pro py-5">
-        <Container>
-          <Row className="justify-content-center">
-            <Col md={8} lg={6}>
-              <Card className="shadow-lg border-0 rounded-4 overflow-hidden">
-                <Card.Header className="bg-primary text-white text-center py-4 bg-gradient">
-                  <div 
-                    className="rounded-circle bg-white text-primary fw-bold mx-auto mb-3 d-flex align-items-center justify-content-center shadow"
-                    style={{ width: '80px', height: '80px', fontSize: '2rem' }}
-                  >
-                    {user ? getInitial(user.fullName) : '?'}
-                  </div>
-                  <h2 className="mb-0 text-white h3">{user ? user.fullName : 'User Profile'}</h2>
-                  <Badge bg="light" text="dark" className="mt-2 px-3 py-1 rounded-pill">
-                    Verified Customer
-                  </Badge>
-                </Card.Header>
-                
-                <Card.Body className="p-4">
-                  {isLoading && !user ? (
-                    <div className="text-center py-4">
-                      <div className="spinner-border text-primary" role="status"></div>
-                      <p className="mt-2 text-muted">Loading profile details...</p>
+
+      <div className="section-padding">
+        <div className="container" style={{ maxWidth: '640px' }}>
+          <div className="feature-card" style={{ padding: '32px' }}>
+            <h2 className="text-center" style={{ marginBottom: '4px' }}>User Account Profile</h2>
+            <p className="text-center" style={{ color: '#6c757d', marginBottom: '24px' }}>
+              Welcome back, {user ? user.fullName : 'Customer'}!
+            </p>
+
+            {/* Profile vs Orders Tab Navigation */}
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+              <button 
+                type="button" 
+                className={activeTab === 'profile' ? "filter-btn active" : "filter-btn"}
+                style={{ flex: 1 }}
+                onClick={() => setActiveTab('profile')}
+              >
+                Personal Details
+              </button>
+              <button 
+                type="button" 
+                className={activeTab === 'orders' ? "filter-btn active" : "filter-btn"}
+                style={{ flex: 1 }}
+                onClick={() => setActiveTab('orders')}
+              >
+                Order History ({orders.length})
+              </button>
+            </div>
+
+            {isLoading && !user ? (
+              <p className="text-center">Loading profile details...</p>
+            ) : activeTab === 'profile' && user ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+                  <small style={{ color: '#6c757d', display: 'block' }}>Full Name</small>
+                  <strong>{user.fullName}</strong>
+                </div>
+
+                <div style={{ padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+                  <small style={{ color: '#6c757d', display: 'block' }}>Email Address</small>
+                  <strong>{user.email}</strong>
+                </div>
+
+                <div style={{ padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+                  <small style={{ color: '#6c757d', display: 'block' }}>Mobile Number</small>
+                  <strong>{user.mobileNumber || 'N/A'}</strong>
+                </div>
+
+                <div style={{ padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '4px', border: '1px solid #e9ecef' }}>
+                  <small style={{ color: '#6c757d', display: 'block' }}>Date of Birth</small>
+                  <strong>{user.dob || 'N/A'}</strong>
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
+                  <Link to="/product" className="primary-btn" style={{ flex: 1, textAlign: 'center' }}>Browse Catalog</Link>
+                  <button type="button" className="logout-btn" style={{ flex: 1 }} onClick={handleLogout}>Logout Account</button>
+                </div>
+              </div>
+            ) : activeTab === 'orders' ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {orders.map((order, idx) => (
+                  <div key={idx} style={{ padding: '16px', backgroundColor: '#ffffff', borderRadius: '6px', border: '1px solid #e9ecef' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <strong>{order.id}</strong>
+                      <span style={{ 
+                        fontSize: '0.8rem', 
+                        fontWeight: 'bold', 
+                        padding: '2px 8px', 
+                        borderRadius: '4px',
+                        backgroundColor: order.status === 'Delivered' ? '#d1e7dd' : order.status === 'Cancelled' ? '#f8d7da' : '#fff3cd',
+                        color: order.status === 'Delivered' ? '#0f5132' : order.status === 'Cancelled' ? '#842029' : '#664d03'
+                      }}>
+                        {order.status}
+                      </span>
                     </div>
-                  ) : error ? (
-                    <div className="alert alert-danger text-center">{error}</div>
-                  ) : user ? (
-                    <>
-                      <h4 className="text-muted text-center mb-4 small text-uppercase tracking-wider">Account Information</h4>
-                      <div className="profile-info space-y-3">
-                        <div className="d-flex align-items-center p-3 rounded bg-light mb-3">
-                          <i className="fa-solid fa-envelope text-primary fs-4 me-3"></i>
-                          <div>
-                            <small className="text-muted d-block">Email Address</small>
-                            <span className="fw-semibold">{user.email}</span>
-                          </div>
-                        </div>
 
-                        <div className="d-flex align-items-center p-3 rounded bg-light mb-3">
-                          <i className="fa-solid fa-phone text-success fs-4 me-3"></i>
-                          <div>
-                            <small className="text-muted d-block">Mobile Number</small>
-                            <span className="fw-semibold">{user.mobileNumber || 'N/A'}</span>
-                          </div>
-                        </div>
+                    <p style={{ fontSize: '0.88rem', color: '#6c757d', marginBottom: '4px' }}>Date: {order.date}</p>
+                    <p style={{ fontSize: '0.88rem', color: '#6c757d', marginBottom: '8px' }}>Items: {order.items}</p>
+                    <p style={{ fontWeight: 'bold', color: '#0d6efd' }}>Total: ₹{order.total.toLocaleString('en-IN')}</p>
 
-                        <div className="d-flex align-items-center p-3 rounded bg-light mb-3">
-                          <i className="fa-solid fa-calendar-days text-warning fs-4 me-3"></i>
-                          <div>
-                            <small className="text-muted d-block">Date of Birth</small>
-                            <span className="fw-semibold">{user.dob || 'N/A'}</span>
-                          </div>
-                        </div>
-
-                        <div className="d-flex align-items-center p-3 rounded bg-light mb-3">
-                          <i className="fa-solid fa-venus-mars text-info fs-4 me-3"></i>
-                          <div>
-                            <small className="text-muted d-block">Gender</small>
-                            <span className="fw-semibold">{user.gender || 'N/A'}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="row g-2 mt-4">
-                        <Col xs={6}>
-                          <Link to="/product" className="btn btn-outline-primary w-100 py-2">
-                            <i className="fa-solid fa-store me-1"></i> Products
-                          </Link>
-                        </Col>
-                        <Col xs={6}>
-                          <Link to="/cart" className="btn btn-outline-secondary w-100 py-2">
-                            <i className="fa-solid fa-cart-shopping me-1"></i> Cart
-                          </Link>
-                        </Col>
-                      </div>
-
-                      <div className="d-grid mt-3">
-                        <Button variant="danger" size="lg" className="py-2 fw-semibold" onClick={handleLogout}>
-                          <i className="fa-solid fa-right-from-bracket me-2"></i> Logout from Account
-                        </Button>
-                      </div>
-                    </>
-                  ) : null}
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
+                    {/* Order Cancellation Option (Before Transit) */}
+                    {order.canCancel ? (
+                      <button 
+                        type="button" 
+                        className="logout-btn" 
+                        style={{ marginTop: '8px', fontSize: '0.8rem', padding: '6px 12px' }}
+                        onClick={() => handleCancelOrder(order.id)}
+                      >
+                        Cancel Order (Before Transit)
+                      </button>
+                    ) : (
+                      <small style={{ color: '#6c757d', display: 'block', marginTop: '8px' }}>
+                        {order.status === "Cancelled" ? "Order Cancelled" : "Delivered (Return Only)"}
+                      </small>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </div>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 };
 

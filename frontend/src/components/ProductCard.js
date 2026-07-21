@@ -1,30 +1,60 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { CartContext } from '../context/CartContext';
 import { Link } from 'react-router-dom';
+import '../styles/css.css';
 
-const ProductCard = ({ imageUrl, title, price, description }) => {
+const ProductCard = ({ imageUrl, title, price, originalPrice, description, badgeText }) => {
   const { addToCart } = useContext(CartContext);
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addToCart({ title, price, imageUrl, description });
+    setIsAdded(true);
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 1500);
+  };
+
+  const formattedPrice = Number(price).toLocaleString('en-IN');
+  const formattedOriginalPrice = originalPrice ? Number(originalPrice).toLocaleString('en-IN') : null;
 
   return (
-    <div className="card h-100 shadow-sm">
-      <img src={imageUrl} className="card-img-top" alt={title} />
-      <div className="card-body d-flex flex-column">
-        <h5 className="card-title">{title}</h5>
-        <div className="card-text flex-grow-1">{description}</div>
-        <h5 className="card-price text-primary my-3">₹{price}</h5>
-        <div className="d-grid gap-2 d-md-block">
+    <div className="product-card">
+      {badgeText && (
+        <span className="product-badge">{badgeText}</span>
+      )}
+
+      <div className="product-img-container">
+        <img src={imageUrl} alt={title} className="product-img" />
+      </div>
+
+      <div className="product-info">
+        <h3 className="product-title">{title}</h3>
+        <p className="product-description">{description}</p>
+        
+        <div className="price-row">
+          <span className="current-price">₹{formattedPrice}</span>
+          {formattedOriginalPrice && (
+            <span className="old-price">₹{formattedOriginalPrice}</span>
+          )}
+        </div>
+
+        <div className="card-btn-group">
           <button 
-            className="btn btn-primary me-md-2" 
-            onClick={() => addToCart({ title, price, imageUrl, description })}
+            type="button" 
+            className={isAdded ? "btn-added" : "btn-add-cart"}
+            onClick={handleAddToCart}
           >
-            Add to Cart
+            {isAdded ? "Added to Cart ✓" : "Add to Cart"}
           </button>
-          <Link to="/cart" className="btn btn-outline-secondary mt-2 mt-md-0">
+          
+          <Link to="/cart" className="btn-view-cart">
             View Cart
           </Link>
         </div>
       </div>
+
     </div>
   );
 };
@@ -32,8 +62,10 @@ const ProductCard = ({ imageUrl, title, price, description }) => {
 ProductCard.propTypes = {
   imageUrl: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
-  description: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
-  price: PropTypes.number.isRequired, 
+  description: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  originalPrice: PropTypes.number,
+  badgeText: PropTypes.string
 };
 
 export default ProductCard;

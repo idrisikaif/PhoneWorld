@@ -1,60 +1,69 @@
-import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
-import Navbar from "../components/Navbar";
+// ====================================================
+// BEGINNER STUDENT CODE - SERVICES PAGE (frontend/src/pages/ServicesPage.js)
+// ====================================================
+// Mobile repair services page outlining repair options, diagnostic procedures,
+// and booking consultation buttons.
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
+import '../styles/css.css';
 
 const ServicesPage = () => {
+  const repairServices = [
+    {
+      title: "Display & Touch Screen Replacement",
+      description: "Original Super AMOLED and IPS LCD screen replacements for Samsung, iPhone, OnePlus, and RealMe devices with 90-day warranty.",
+      pricing: "Starting from ₹1,200"
+    },
+    {
+      title: "Battery Diagnostic & Replacement",
+      description: "Genuine high-health capacity battery replacements to fix fast draining, swelling, or unexpected phone shutdowns.",
+      pricing: "Starting from ₹800"
+    },
+    {
+      title: "Charging Port & Speaker Repair",
+      description: "Fix loose charging pins, slow Type-C/Lightning port connections, distorted mic audio, or silent ear speakers.",
+      pricing: "Starting from ₹500"
+    },
+    {
+      title: "Water Damage & Motherboard Repair",
+      description: "Advanced micro-soldering IC repair, liquid damage clean-up, and dead phone recovery using diagnostic tools.",
+      pricing: "Starting from ₹1,500"
+    }
+  ];
+
   return (
-    <div>
+    <div className="page-wrapper">
       <Navbar />
-      <div className="services py-5">
-        <Container>
-          <h1 className="text-center mb-5 fw-bold">Our Services</h1>
-          <Row className="g-4">
-            <Col xs={12} md={6}>
-              <div className="p-4 bg-white rounded shadow-sm h-100 border-start border-primary border-5">
-                <h3 className="mb-3">Phone In Service</h3>
-                <p>At Kaif Phones, we understand that sometimes your phone needs a little extra attention. Whether you're experiencing technical difficulties or simply need a repair, our dedicated team is here to help.</p>
-              </div>
-            </Col>
 
-            <Col xs={12} md={6}>
-              <div className="p-4 bg-white rounded shadow-sm h-100 border-start border-success border-5">
-                <h3 className="mb-3">Repair Services</h3>
-                <ul className="list-unstyled">
-                  <li>✔ Diagnostic and troubleshooting</li>
-                  <li>✔ Screen replacement and repair</li>
-                  <li>✔ Battery replacement and repair</li>
-                  <li>✔ Water damage recovery</li>
-                  <li>✔ Software updates</li>
-                </ul>
-              </div>
-            </Col>
+      <div className="section-padding">
+        <div className="container">
+          <div className="section-header">
+            <h2>Mobile Repair & Diagnostic Services</h2>
+            <p>Professional repair services by certified technicians at Kaif Phones Bhiwandi.</p>
+          </div>
 
-            <Col xs={12} md={6}>
-              <div className="p-4 bg-white rounded shadow-sm h-100 border-start border-warning border-5">
-                <h3 className="mb-3">Benefits of Our Service</h3>
-                <ul className="list-unstyled">
-                  <li>✔ Quick turnaround times</li>
-                  <li>✔ Competitive pricing</li>
-                  <li>✔ Genuine parts used</li>
-                  <li>✔ Expert technicians</li>
-                  <li>✔ Warranty on all repairs</li>
-                </ul>
+          <div className="features-grid">
+            {repairServices.map((service, index) => (
+              <div key={index} className="feature-card">
+                <h3>{service.title}</h3>
+                <p style={{ marginBottom: '12px' }}>{service.description}</p>
+                <p style={{ fontWeight: 'bold', color: '#0d6efd' }}>{service.pricing}</p>
               </div>
-            </Col>
+            ))}
+          </div>
 
-            <Col xs={12} md={6}>
-              <div className="p-4 bg-white rounded shadow-sm h-100 border-start border-info border-5">
-                <h3 className="mb-3">Frequently Asked Questions</h3>
-                <strong>Q: How long does a repair take?</strong>
-                <p>A: Most repairs take 24-48 hours.</p>
-                <strong>Q: Do you use genuine parts?</strong>
-                <p>A: Yes, we only use genuine parts for quality.</p>
-              </div>
-            </Col>
-          </Row>
-        </Container>
+          <div className="empty-box" style={{ marginTop: '32px' }}>
+            <h3>Need a Custom Repair Estimate?</h3>
+            <p>Bring your smartphone to our store or contact us on WhatsApp for an instant free repair quote.</p>
+            <Link to="/contact" className="primary-btn">Book Repair Consultation</Link>
+          </div>
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
 };
